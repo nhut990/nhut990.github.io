@@ -50,7 +50,7 @@
     </audio>
   </div>
 
-  function gameOver(){run=false;overlay.style.display='flex';msgText.textContent='Bạn thua!';msgSub.textContent='Điểm: '+Math.floor(state.score);}
+function gameOver(){run=false;overlay.style.display='flex';msgText.textContent='Bạn thua!';msgSub.textContent='Điểm: '+Math.floor(state.score);}
 function render(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle='#cfcfcf';
@@ -95,8 +95,5 @@ const observer=new ResizeObserver(()=>{fitCanvas();});observer.observe(document.
 </script>
 </body>
 </html>
-  <footer>
-    <p>© 2025 Nhựt | Powered by GitHub Pages</p>
-  </footer>
 </body>
 </html>
