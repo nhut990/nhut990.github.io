@@ -50,6 +50,93 @@
     </audio>
   </div>
 
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Game Nhảy Tránh Chướng Ngại</title>
+<style>
+  :root{
+    --bg:#f7f7f7;
+    --ground:#555;
+    --accent:#ff6b6b;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:system-ui,Arial;}
+  .game-wrap{width:920px;max-width:95vw;height:320px;background:linear-gradient(#e9f0ff,#f7f7f7 60%);border:1px solid #ddd;box-shadow:0 8px 30px rgba(0,0,0,0.08);position:relative;overflow:hidden;}
+  canvas{display:block;width:100%;height:100%;}
+  .ui{position:absolute;left:12px;top:12px;color:#222;font-weight:600;}
+  .score{position:absolute;right:12px;top:12px;color:#222;font-weight:700;}
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+  .msg{pointer-events:auto;background:rgba(255,255,255,0.95);border-radius:8px;padding:18px 22px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,0.12);}
+  .btn{margin-top:10px;display:inline-block;padding:8px 14px;border-radius:6px;background:var(--accent);color:white;font-weight:700;cursor:pointer;text-decoration:none;}
+  .hint{position:absolute;left:12px;bottom:8px;font-size:12px;color:#555;opacity:0.9;}
+</style>
+</head>
+<body>
+  <div class="game-wrap" id="game">
+    <canvas id="c"></canvas>
+    <div class="ui">Game Nhảy Tránh Chướng Ngại</div>
+    <div class="score" id="score">0</div>
+    <div class="hint">Nhấn Space / Mũi lên hoặc chạm để nhảy</div>
+    <div class="overlay" id="overlay" style="display:none">
+      <div class="msg" id="msg">
+        <div id="msgText" style="font-size:18px;font-weight:800;color:#222">Bạn thua!</div>
+        <div style="margin-top:8px;color:#444" id="msgSub">Nhấn CHƠI LẠI để bắt đầu</div>
+        <a class="btn" id="restart">CHƠI LẠI</a>
+      </div>
+    </div>
+  </div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+function fitCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=r.height;}
+fitCanvas();addEventListener('resize',fitCanvas);
+const W=()=>canvas.width,H=()=>canvas.height;
+let groundY,lastTime=0,run=false;
+let scoreEl=document.getElementById('score');
+let overlay=document.getElementById('overlay');
+let msgText=document.getElementById('msgText');
+let msgSub=document.getElementById('msgSub');
+
+const state={speed:6,gravity:0.6,obstacles:[],spawnTimer:0,spawnInterval:1000,score:0,difficultyTimer:0};
+
+const dino={x:60,w:64,h:64,y:0,vy:0,onGround:true,jumpPower:-12};
+
+// ảnh nhân vật (ảnh bạn)
+let dinoImg=new Image();
+dinoImg.src="https://dl.dropboxusercontent.com/scl/fi/w29vuj0nms00t2dkjukj8/IMG_5199.png?rlkey=7r674sstalvbg3qxenyx59789&st=0yf1gn1b";
+
+function renderDino(){
+  if(dinoImg.complete){
+    ctx.drawImage(dinoImg,dino.x,dino.y,dino.w,dino.h);
+  }else{
+    ctx.fillStyle='#2b2b2b';
+    ctx.fillRect(dino.x,dino.y,dino.w,dino.h);
+  }
+}
+
+function createObstacle(){
+  const t=Math.random()<0.25?'tall':'short';
+  let w=t==='tall'?randInt(32,48):randInt(22,36);
+  let h=t==='tall'?randInt(48,78):randInt(24,40);
+  return{x:W()+10,w,h,passed:false,color:'#333'};
+}
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function jump(){if(!run){startGame();return;}if(dino.onGround){dino.vy=dino.jumpPower;dino.onGround=false;}}
+addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();}});
+canvas.addEventListener('touchstart',e=>{e.preventDefault();jump();},{passive:false});
+canvas.addEventListener('mousedown',()=>jump());
+
+function startGame(){
+  state.obstacles=[];state.speed=6;state.spawnTimer=0;state.spawnInterval=1000;state.score=0;state.difficultyTimer=0;
+  dino.y=0;dino.vy=0;dino.onGround=true;
+  overlay.style.display='none';run=true;lastTime=performance.now();requestAnimationFrame(loop);
+}
+document.getElementById('restart').addEventListener('click',startGame);
+
+function collides(a,b){return!(a.x+a.w<b.x||a.x>b.x+b.w||a.y+a.h<b.y||a.y>b.y+b.h);}
 function gameOver(){run=false;overlay.style.display='flex';msgText.textContent='Bạn thua!';msgSub.textContent='Điểm: '+Math.floor(state.score);}
 function render(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -93,7 +180,5 @@ overlay.style.display='flex';msgText.textContent='Sẵn sàng?';msgSub.textConte
 document.getElementById('restart').textContent='BẮT ĐẦU';
 const observer=new ResizeObserver(()=>{fitCanvas();});observer.observe(document.getElementById('game'));
 </script>
-</body>
-</html>
 </body>
 </html>
