@@ -50,6 +50,51 @@
     </audio>
   </div>
 
+  function gameOver(){run=false;overlay.style.display='flex';msgText.textContent='Bạn thua!';msgSub.textContent='Điểm: '+Math.floor(state.score);}
+function render(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#cfcfcf';
+  ctx.fillRect(0,groundY,canvas.width,canvas.height-groundY);
+  renderDino();
+  for(const ob of state.obstacles){
+    ctx.fillStyle=ob.color;
+    const oy=groundY-ob.h;
+    ctx.fillRect(ob.x,oy,ob.w,ob.h);
+  }
+}
+function loop(now){
+  if(!run)return;
+  const dt=Math.min(40,now-lastTime);lastTime=now;
+  groundY=Math.floor(canvas.height*0.78);
+  if(dino.y===0&&dino.onGround)dino.y=groundY-dino.h;
+  dino.vy+=state.gravity;dino.y+=dino.vy;
+  if(dino.y+dino.h>=groundY){dino.y=groundY-dino.h;dino.vy=0;dino.onGround=true;}
+  state.spawnTimer+=dt;
+  if(state.spawnTimer>=state.spawnInterval){
+    state.spawnTimer=0;state.obstacles.push(createObstacle());
+    state.spawnInterval=randInt(700,1400)-Math.floor(state.speed*20);
+  }
+  for(let i=state.obstacles.length-1;i>=0;i--){
+    const ob=state.obstacles[i];ob.x-=state.speed;
+    if(!ob.passed&&ob.x+ob.w<dino.x){ob.passed=true;state.score+=10;}
+    if(ob.x+ob.w<-50)state.obstacles.splice(i,1);
+  }
+  for(const ob of state.obstacles){
+    const obRect={x:ob.x,y:groundY-ob.h,w:ob.w,h:ob.h};
+    const dRect={x:dino.x,y:dino.y,w:dino.w,h:dino.h};
+    if(collides(dRect,obRect)){gameOver();return;}
+  }
+  state.difficultyTimer+=dt;
+  if(state.difficultyTimer>1500){state.difficultyTimer=0;state.speed+=0.15;}
+  state.score+=dt*0.02;scoreEl.textContent=Math.floor(state.score);
+  render();requestAnimationFrame(loop);
+}
+overlay.style.display='flex';msgText.textContent='Sẵn sàng?';msgSub.textContent='Nhấn Space / Mũi lên hoặc chạm màn hình để bắt đầu';
+document.getElementById('restart').textContent='BẮT ĐẦU';
+const observer=new ResizeObserver(()=>{fitCanvas();});observer.observe(document.getElementById('game'));
+</script>
+</body>
+</html>
   <footer>
     <p>© 2025 Nhựt | Powered by GitHub Pages</p>
   </footer>
