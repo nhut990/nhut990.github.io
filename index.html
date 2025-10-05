@@ -29,7 +29,7 @@
     <div class="hint">Nhấn Space / Mũi lên hoặc chạm để nhảy</div>
     <div class="overlay" id="overlay" style="display:none">
       <div class="msg" id="msg">
-        <div id="msgText" style="font-size:18px;font-weight:800;color:#222">Bạn thua!</div>
+        <div id="msgText" style="font-size:18px;font-weight:800;color:#222">Ý Thua Rồi!</div>
         <div style="margin-top:8px;color:#444" id="msgSub">Nhấn CHƠI LẠI để bắt đầu</div>
         <a class="btn" id="restart">CHƠI LẠI</a>
       </div>
@@ -51,10 +51,21 @@ let msgSub=document.getElementById('msgSub');
 // Âm thanh
 const sndJump = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c83b3e1ac.mp3?filename=jump-coin-2-22833.mp3");
 const sndLose = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_1a0ce651b8.mp3?filename=negative-beeps-6008.mp3");
+let soundReady = false;
+
+function enableSoundOnce() {
+  if (soundReady) return;
+  soundReady = true;
+  sndJump.play().then(()=>sndJump.pause());
+  sndLose.play().then(()=>sndLose.pause());
+}
+document.body.addEventListener('click', enableSoundOnce);
+document.body.addEventListener('keydown', enableSoundOnce);
+document.body.addEventListener('touchstart', enableSoundOnce);
 
 const state={speed:6,gravity:0.6,obstacles:[],spawnTimer:0,spawnInterval:1000,score:0,difficultyTimer:0};
 
-// Nhân vật to hơn (tăng từ 64 lên 80)
+// Nhân vật to hơn
 const dino={x:60,w:80,h:80,y:0,vy:0,onGround:true,jumpPower:-13};
 
 // ảnh nhân vật
@@ -82,8 +93,7 @@ function jump(){
   if(dino.onGround){
     dino.vy=dino.jumpPower;
     dino.onGround=false;
-    sndJump.currentTime=0; // phát lại từ đầu
-    sndJump.play();
+    if(soundReady){ sndJump.currentTime=0; sndJump.play(); }
   }
 }
 addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();}});
@@ -100,10 +110,9 @@ document.getElementById('restart').addEventListener('click',startGame);
 function collides(a,b){return!(a.x+a.w<b.x||a.x>b.x+b.w||a.y+a.h<b.y||a.y>b.y+b.h);}
 function gameOver(){
   run=false;
-  sndLose.currentTime=0;
-  sndLose.play();
+  if(soundReady){ sndLose.currentTime=0; sndLose.play(); }
   overlay.style.display='flex';
-  msgText.textContent='Bạn thua!';
+  msgText.textContent='Ý Thua Rồi!';
   msgSub.textContent='Điểm: '+Math.floor(state.score);
 }
 function render(){
