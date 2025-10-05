@@ -48,11 +48,16 @@ let overlay=document.getElementById('overlay');
 let msgText=document.getElementById('msgText');
 let msgSub=document.getElementById('msgSub');
 
+// Âm thanh
+const sndJump = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c83b3e1ac.mp3?filename=jump-coin-2-22833.mp3");
+const sndLose = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_1a0ce651b8.mp3?filename=negative-beeps-6008.mp3");
+
 const state={speed:6,gravity:0.6,obstacles:[],spawnTimer:0,spawnInterval:1000,score:0,difficultyTimer:0};
 
-const dino={x:60,w:64,h:64,y:0,vy:0,onGround:true,jumpPower:-12};
+// Nhân vật to hơn (tăng từ 64 lên 80)
+const dino={x:60,w:80,h:80,y:0,vy:0,onGround:true,jumpPower:-13};
 
-// ảnh nhân vật (ảnh bạn)
+// ảnh nhân vật
 let dinoImg=new Image();
 dinoImg.src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/IMG_5199%20(2).png";
 
@@ -72,7 +77,15 @@ function createObstacle(){
   return{x:W()+10,w,h,passed:false,color:'#333'};
 }
 function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
-function jump(){if(!run){startGame();return;}if(dino.onGround){dino.vy=dino.jumpPower;dino.onGround=false;}}
+function jump(){
+  if(!run){startGame();return;}
+  if(dino.onGround){
+    dino.vy=dino.jumpPower;
+    dino.onGround=false;
+    sndJump.currentTime=0; // phát lại từ đầu
+    sndJump.play();
+  }
+}
 addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();}});
 canvas.addEventListener('touchstart',e=>{e.preventDefault();jump();},{passive:false});
 canvas.addEventListener('mousedown',()=>jump());
@@ -85,7 +98,14 @@ function startGame(){
 document.getElementById('restart').addEventListener('click',startGame);
 
 function collides(a,b){return!(a.x+a.w<b.x||a.x>b.x+b.w||a.y+a.h<b.y||a.y>b.y+b.h);}
-function gameOver(){run=false;overlay.style.display='flex';msgText.textContent='Bạn thua!';msgSub.textContent='Điểm: '+Math.floor(state.score);}
+function gameOver(){
+  run=false;
+  sndLose.currentTime=0;
+  sndLose.play();
+  overlay.style.display='flex';
+  msgText.textContent='Bạn thua!';
+  msgSub.textContent='Điểm: '+Math.floor(state.score);
+}
 function render(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle='#cfcfcf';
