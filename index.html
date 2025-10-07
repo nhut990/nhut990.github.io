@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <title>Game Ý Nhảy Tránh Chướng Ngại Vật</title>
 <style>
   :root{
@@ -15,9 +15,18 @@
     margin:0;
     background:var(--bg);
     display:flex;
+    flex-direction:column;
     align-items:center;
-    justify-content:center;
+    justify-content:flex-start;
     font-family:system-ui,Arial;
+    overflow:hidden;
+  }
+  h1{
+    font-size:18px;
+    margin:10px 0 6px;
+    color:#222;
+    font-weight:700;
+    text-align:center;
   }
   .game-wrap{
     width:920px;
@@ -28,23 +37,17 @@
     box-shadow:0 8px 30px rgba(0,0,0,0.08);
     position:relative;
     overflow:hidden;
+    border-radius:8px;
   }
   canvas{
     display:block;
     width:100%;
     height:100%;
   }
-  .ui{
-    position:absolute;
-    left:12px;
-    top:12px;
-    color:#222;
-    font-weight:600;
-  }
   .score{
     position:absolute;
     right:12px;
-    top:12px;
+    top:10px;
     color:#222;
     font-weight:700;
   }
@@ -77,18 +80,26 @@
   }
   .hint{
     position:absolute;
-    left:12px;
-    bottom:8px;
-    font-size:12px;
+    left:10px;
+    bottom:4px;
+    font-size:10px;
     color:#555;
     opacity:0.9;
+    background:rgba(255,255,255,0.6);
+    padding:2px 6px;
+    border-radius:4px;
+  }
+  @media (orientation: landscape) {
+    .game-wrap{ height:220px; }
+    h1{ font-size:16px; }
+    .hint{ font-size:9px; bottom:2px; left:8px; padding:1px 5px; }
   }
 </style>
 </head>
 <body>
+  <h1>Game Ý Nhảy Tránh Chướng Ngại Vật</h1>
   <div class="game-wrap" id="game">
     <canvas id="c"></canvas>
-    <div class="ui">Game Ý Nhảy Tránh Chướng Ngại Vật</div>
     <div class="score" id="score">0</div>
     <div class="hint">Nhấn Space / Mũi lên hoặc chạm để nhảy</div>
     <div class="overlay" id="overlay" style="display:none">
@@ -104,7 +115,6 @@
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 
-// Giúp nhân vật hiển thị nét trên mọi loại màn hình
 function fitCanvas(){
   const r = canvas.getBoundingClientRect();
   const scale = window.devicePixelRatio || 1;
@@ -212,7 +222,6 @@ function gameOver(){
   run=false;
   if(soundReady){ sndLose.currentTime=0; sndLose.play(); }
   overlay.style.display='flex';
-  // ✅ Dòng sửa theo yêu cầu:
   msgText.textContent='Ý THUA RỒI 😂';
   msgSub.textContent='Điểm: '+Math.floor(state.score);
 }
