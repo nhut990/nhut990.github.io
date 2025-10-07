@@ -212,7 +212,8 @@ function gameOver(){
   run=false;
   if(soundReady){ sndLose.currentTime=0; sndLose.play(); }
   overlay.style.display='flex';
-  msgText.textContent='Ý Thua Rồi!';
+  // ✅ Dòng sửa theo yêu cầu:
+  msgText.textContent='Ý THUA RỒI 😂';
   msgSub.textContent='Điểm: '+Math.floor(state.score);
 }
 
