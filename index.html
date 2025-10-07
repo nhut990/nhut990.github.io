@@ -10,15 +10,79 @@
     --ground:#555;
     --accent:#ff6b6b;
   }
-  html,body{height:100%;margin:0;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:system-ui,Arial;}
-  .game-wrap{width:920px;max-width:95vw;height:320px;background:linear-gradient(#e9f0ff,#f7f7f7 60%);border:1px solid #ddd;box-shadow:0 8px 30px rgba(0,0,0,0.08);position:relative;overflow:hidden;}
-  canvas{display:block;width:100%;height:100%;}
-  .ui{position:absolute;left:12px;top:12px;color:#222;font-weight:600;}
-  .score{position:absolute;right:12px;top:12px;color:#222;font-weight:700;}
-  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
-  .msg{pointer-events:auto;background:rgba(255,255,255,0.95);border-radius:8px;padding:18px 22px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,0.12);}
-  .btn{margin-top:10px;display:inline-block;padding:8px 14px;border-radius:6px;background:var(--accent);color:white;font-weight:700;cursor:pointer;text-decoration:none;}
-  .hint{position:absolute;left:12px;bottom:8px;font-size:12px;color:#555;opacity:0.9;}
+  html,body{
+    height:100%;
+    margin:0;
+    background:var(--bg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:system-ui,Arial;
+  }
+  .game-wrap{
+    width:920px;
+    max-width:95vw;
+    height:320px;
+    background:linear-gradient(#e9f0ff,#f7f7f7 60%);
+    border:1px solid #ddd;
+    box-shadow:0 8px 30px rgba(0,0,0,0.08);
+    position:relative;
+    overflow:hidden;
+  }
+  canvas{
+    display:block;
+    width:100%;
+    height:100%;
+  }
+  .ui{
+    position:absolute;
+    left:12px;
+    top:12px;
+    color:#222;
+    font-weight:600;
+  }
+  .score{
+    position:absolute;
+    right:12px;
+    top:12px;
+    color:#222;
+    font-weight:700;
+  }
+  .overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+  }
+  .msg{
+    pointer-events:auto;
+    background:rgba(255,255,255,0.95);
+    border-radius:8px;
+    padding:18px 22px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.12);
+  }
+  .btn{
+    margin-top:10px;
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:6px;
+    background:var(--accent);
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:none;
+  }
+  .hint{
+    position:absolute;
+    left:12px;
+    bottom:8px;
+    font-size:12px;
+    color:#555;
+    opacity:0.9;
+  }
 </style>
 </head>
 <body>
@@ -39,14 +103,27 @@
 <script>
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
-function fitCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=r.height;}
-fitCanvas();addEventListener('resize',fitCanvas);
-const W=()=>canvas.width,H=()=>canvas.height;
-let groundY,lastTime=0,run=false;
-let scoreEl=document.getElementById('score');
-let overlay=document.getElementById('overlay');
-let msgText=document.getElementById('msgText');
-let msgSub=document.getElementById('msgSub');
+
+// Giúp nhân vật hiển thị nét trên mọi loại màn hình
+function fitCanvas(){
+  const r = canvas.getBoundingClientRect();
+  const scale = window.devicePixelRatio || 1;
+  canvas.width = r.width * scale;
+  canvas.height = r.height * scale;
+  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+}
+ctx.imageSmoothingEnabled = false;
+fitCanvas();
+addEventListener('resize', fitCanvas);
+
+const W = ()=>canvas.width / (window.devicePixelRatio || 1);
+const H = ()=>canvas.height / (window.devicePixelRatio || 1);
+
+let groundY, lastTime=0, run=false;
+let scoreEl = document.getElementById('score');
+let overlay = document.getElementById('overlay');
+let msgText = document.getElementById('msgText');
+let msgSub = document.getElementById('msgSub');
 
 // Âm thanh
 const sndJump = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c83b3e1ac.mp3?filename=jump-coin-2-22833.mp3");
@@ -63,23 +140,29 @@ document.body.addEventListener('click', enableSoundOnce);
 document.body.addEventListener('keydown', enableSoundOnce);
 document.body.addEventListener('touchstart', enableSoundOnce);
 
-const state={speed:6,gravity:0.6,obstacles:[],spawnTimer:0,spawnInterval:1000,score:0,difficultyTimer:0};
+const state = {
+  speed:6, gravity:0.6, obstacles:[],
+  spawnTimer:0, spawnInterval:1000,
+  score:0, difficultyTimer:0
+};
 
-// Nhân vật to hơn
-const dino={x:60,w:80,h:80,y:0,vy:0,onGround:true,jumpPower:-13};
+// Nhân vật
+const dino = {x:60, w:80, h:80, y:0, vy:0, onGround:true, jumpPower:-13};
 
-// ảnh nhân vật
-let dinoImg=new Image();
-dinoImg.src="https://raw.githubusercontent.com/nhut990/files/refs/heads/main/IMG_5255.png";
+// Ảnh nhân vật
+let dinoImg = new Image();
+dinoImg.src = "https://raw.githubusercontent.com/nhut990/files/refs/heads/main/IMG_5255.png";
 
 function renderDino(){
   if(dinoImg.complete){
-    ctx.drawImage(dinoImg,dino.x,dino.y,dino.w,dino.h);
+    ctx.drawImage(dinoImg, dino.x, dino.y, dino.w, dino.h);
   }else{
     ctx.fillStyle='#2b2b2b';
-    ctx.fillRect(dino.x,dino.y,dino.w,dino.h);
+    ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
   }
 }
+
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
 
 function createObstacle(){
   const t=Math.random()<0.25?'tall':'short';
@@ -87,7 +170,7 @@ function createObstacle(){
   let h=t==='tall'?randInt(48,78):randInt(24,40);
   return{x:W()+10,w,h,passed:false,color:'#333'};
 }
-function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+
 function jump(){
   if(!run){startGame();return;}
   if(dino.onGround){
@@ -96,18 +179,35 @@ function jump(){
     if(soundReady){ sndJump.currentTime=0; sndJump.play(); }
   }
 }
-addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();}});
-canvas.addEventListener('touchstart',e=>{e.preventDefault();jump();},{passive:false});
-canvas.addEventListener('mousedown',()=>jump());
+
+addEventListener('keydown', e=>{
+  if(e.code==='Space'||e.code==='ArrowUp'){
+    e.preventDefault();
+    jump();
+  }
+});
+canvas.addEventListener('touchstart', e=>{e.preventDefault();jump();},{passive:false});
+canvas.addEventListener('mousedown', ()=>jump());
 
 function startGame(){
-  state.obstacles=[];state.speed=6;state.spawnTimer=0;state.spawnInterval=1000;state.score=0;state.difficultyTimer=0;
+  state.obstacles=[];
+  state.speed=6;
+  state.spawnTimer=0;
+  state.spawnInterval=1000;
+  state.score=0;
+  state.difficultyTimer=0;
   dino.y=0;dino.vy=0;dino.onGround=true;
-  overlay.style.display='none';run=true;lastTime=performance.now();requestAnimationFrame(loop);
+  overlay.style.display='none';
+  run=true;
+  lastTime=performance.now();
+  requestAnimationFrame(loop);
 }
-document.getElementById('restart').addEventListener('click',startGame);
+document.getElementById('restart').addEventListener('click', startGame);
 
-function collides(a,b){return!(a.x+a.w<b.x||a.x>b.x+b.w||a.y+a.h<b.y||a.y>b.y+b.h);}
+function collides(a,b){
+  return !(a.x+a.w<b.x||a.x>b.x+b.w||a.y+a.h<b.y||a.y>b.y+b.h);
+}
+
 function gameOver(){
   run=false;
   if(soundReady){ sndLose.currentTime=0; sndLose.play(); }
@@ -115,10 +215,11 @@ function gameOver(){
   msgText.textContent='Ý Thua Rồi!';
   msgSub.textContent='Điểm: '+Math.floor(state.score);
 }
+
 function render(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0,0,W(),H());
   ctx.fillStyle='#cfcfcf';
-  ctx.fillRect(0,groundY,canvas.width,canvas.height-groundY);
+  ctx.fillRect(0,groundY,W(),H()-groundY);
   renderDino();
   for(const ob of state.obstacles){
     ctx.fillStyle=ob.color;
@@ -126,36 +227,65 @@ function render(){
     ctx.fillRect(ob.x,oy,ob.w,ob.h);
   }
 }
+
 function loop(now){
   if(!run)return;
-  const dt=Math.min(40,now-lastTime);lastTime=now;
-  groundY=Math.floor(canvas.height*0.78);
+  const dt=Math.min(40,now-lastTime);
+  lastTime=now;
+  groundY=Math.floor(H()*0.78);
+
   if(dino.y===0&&dino.onGround)dino.y=groundY-dino.h;
-  dino.vy+=state.gravity;dino.y+=dino.vy;
-  if(dino.y+dino.h>=groundY){dino.y=groundY-dino.h;dino.vy=0;dino.onGround=true;}
+  dino.vy+=state.gravity;
+  dino.y+=dino.vy;
+  if(dino.y+dino.h>=groundY){
+    dino.y=groundY-dino.h;
+    dino.vy=0;
+    dino.onGround=true;
+  }
+
   state.spawnTimer+=dt;
   if(state.spawnTimer>=state.spawnInterval){
-    state.spawnTimer=0;state.obstacles.push(createObstacle());
+    state.spawnTimer=0;
+    state.obstacles.push(createObstacle());
     state.spawnInterval=randInt(700,1400)-Math.floor(state.speed*20);
   }
+
   for(let i=state.obstacles.length-1;i>=0;i--){
-    const ob=state.obstacles[i];ob.x-=state.speed;
-    if(!ob.passed&&ob.x+ob.w<dino.x){ob.passed=true;state.score+=10;}
+    const ob=state.obstacles[i];
+    ob.x-=state.speed;
+    if(!ob.passed && ob.x+ob.w<dino.x){
+      ob.passed=true;
+      state.score+=10;
+    }
     if(ob.x+ob.w<-50)state.obstacles.splice(i,1);
   }
+
   for(const ob of state.obstacles){
     const obRect={x:ob.x,y:groundY-ob.h,w:ob.w,h:ob.h};
     const dRect={x:dino.x,y:dino.y,w:dino.w,h:dino.h};
     if(collides(dRect,obRect)){gameOver();return;}
   }
+
   state.difficultyTimer+=dt;
-  if(state.difficultyTimer>1500){state.difficultyTimer=0;state.speed+=0.15;}
-  state.score+=dt*0.02;scoreEl.textContent=Math.floor(state.score);
-  render();requestAnimationFrame(loop);
+  if(state.difficultyTimer>1500){
+    state.difficultyTimer=0;
+    state.speed+=0.15;
+  }
+
+  state.score+=dt*0.02;
+  scoreEl.textContent=Math.floor(state.score);
+
+  render();
+  requestAnimationFrame(loop);
 }
-overlay.style.display='flex';msgText.textContent='Sẵn sàng?';msgSub.textContent='Nhấn Space / Mũi lên hoặc chạm màn hình để bắt đầu';
+
+overlay.style.display='flex';
+msgText.textContent='Sẵn sàng?';
+msgSub.textContent='Nhấn Space / Mũi lên hoặc chạm màn hình để bắt đầu';
 document.getElementById('restart').textContent='BẮT ĐẦU';
-const observer=new ResizeObserver(()=>{fitCanvas();});observer.observe(document.getElementById('game'));
+
+const observer=new ResizeObserver(()=>{fitCanvas();});
+observer.observe(document.getElementById('game'));
 </script>
 </body>
 </html>
