@@ -23,14 +23,16 @@
   }
   h1{
     font-size:18px;
-    margin:10px 0 6px;
+    margin:8px 0 4px;
     color:#222;
     font-weight:700;
     text-align:center;
+    padding:0 10px;
+    line-height:1.2;
   }
   .game-wrap{
-    width:920px;
-    max-width:95vw;
+    width:900px;
+    max-width:96vw;
     height:320px;
     background:linear-gradient(#e9f0ff,#f7f7f7 60%);
     border:1px solid #ddd;
@@ -38,6 +40,7 @@
     position:relative;
     overflow:hidden;
     border-radius:8px;
+    touch-action:none;
   }
   canvas{
     display:block;
@@ -63,7 +66,7 @@
     pointer-events:auto;
     background:rgba(255,255,255,0.95);
     border-radius:8px;
-    padding:18px 22px;
+    padding:16px 22px;
     text-align:center;
     box-shadow:0 6px 18px rgba(0,0,0,0.12);
   }
@@ -82,16 +85,17 @@
     position:absolute;
     left:10px;
     bottom:4px;
-    font-size:10px;
+    font-size:11px;
     color:#555;
     opacity:0.9;
     background:rgba(255,255,255,0.6);
     padding:2px 6px;
     border-radius:4px;
   }
+
   @media (orientation: landscape) {
-    .game-wrap{ height:220px; }
-    h1{ font-size:16px; }
+    .game-wrap{ height:240px; }
+    h1{ font-size:15px; }
     .hint{ font-size:9px; bottom:2px; left:8px; padding:1px 5px; }
   }
 </style>
@@ -146,9 +150,9 @@ function enableSoundOnce() {
   sndJump.play().then(()=>sndJump.pause());
   sndLose.play().then(()=>sndLose.pause());
 }
-document.body.addEventListener('click', enableSoundOnce);
-document.body.addEventListener('keydown', enableSoundOnce);
-document.body.addEventListener('touchstart', enableSoundOnce);
+["click","keydown","touchstart"].forEach(e=>{
+  document.body.addEventListener(e,enableSoundOnce);
+});
 
 const state = {
   speed:6, gravity:0.6, obstacles:[],
@@ -157,7 +161,7 @@ const state = {
 };
 
 // Nhân vật
-const dino = {x:60, w:80, h:80, y:0, vy:0, onGround:true, jumpPower:-13};
+const dino = {x:60, w:70, h:70, y:0, vy:0, onGround:true, jumpPower:-12};
 
 // Ảnh nhân vật
 let dinoImg = new Image();
@@ -242,7 +246,8 @@ function loop(now){
   if(!run)return;
   const dt=Math.min(40,now-lastTime);
   lastTime=now;
-  groundY=Math.floor(H()*0.78);
+  // Giảm mặt đất xuống thấp hơn
+  groundY=Math.floor(H()*0.86);
 
   if(dino.y===0&&dino.onGround)dino.y=groundY-dino.h;
   dino.vy+=state.gravity;
