@@ -93,10 +93,28 @@
     border-radius:4px;
   }
 
+  /* 🎵 Nút bật/tắt âm thanh */
+  #soundBtn{
+    position:absolute;
+    right:10px;
+    bottom:6px;
+    font-size:11px;
+    padding:4px 8px;
+    border:none;
+    border-radius:5px;
+    background:#ff6b6b;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    opacity:0.9;
+  }
+  #soundBtn:hover{ opacity:1; }
+
   @media (orientation: landscape) {
     .game-wrap{ height:240px; }
     h1{ font-size:15px; }
     .hint{ font-size:9px; bottom:2px; left:8px; padding:1px 5px; }
+    #soundBtn{ font-size:9px; padding:3px 6px; bottom:3px; right:6px; }
   }
 </style>
 </head>
@@ -106,6 +124,7 @@
     <canvas id="c"></canvas>
     <div class="score" id="score">0</div>
     <div class="hint">Nhấn Space / Mũi lên hoặc chạm để nhảy</div>
+    <button id="soundBtn">Dừng Âm Thanh</button>
     <div class="overlay" id="overlay" style="display:none">
       <div class="msg" id="msg">
         <div id="msgText" style="font-size:18px;font-weight:800;color:#222">Ý Thua Rồi!</div>
@@ -152,6 +171,20 @@ function playRadio(){
     radio.play().catch(()=>{});
   }
 }
+
+// 🔈 Nút bật/tắt âm thanh
+const soundBtn = document.getElementById('soundBtn');
+soundBtn.addEventListener('click', ()=>{
+  if(radio.paused){
+    radio.play().catch(()=>{});
+    soundBtn.textContent = "Dừng Âm Thanh";
+    soundBtn.style.background = "#ff6b6b";
+  } else {
+    radio.pause();
+    soundBtn.textContent = "Phát Âm Thanh";
+    soundBtn.style.background = "#888";
+  }
+});
 
 const state = {
   speed:6, gravity:0.6, obstacles:[],
@@ -220,6 +253,8 @@ function startGame(){
   run = true;
   lastTime = performance.now();
   playRadio(); // 🔈 Phát radio khi bắt đầu chơi
+  soundBtn.textContent = "Dừng Âm Thanh";
+  soundBtn.style.background = "#ff6b6b";
   requestAnimationFrame(loop);
 }
 document.getElementById('restart').addEventListener('click', startGame);
