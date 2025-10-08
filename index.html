@@ -139,22 +139,6 @@ let overlay = document.getElementById('overlay');
 let msgText = document.getElementById('msgText');
 let msgSub = document.getElementById('msgSub');
 
-// Âm thanh (dùng file bạn gửi)
-const sndJump = new Audio("https://github.com/nhut990/files/raw/refs/heads/main/music/mario_nhay.mp3");
-const sndLose = new Audio("https://github.com/nhut990/files/raw/refs/heads/main/music/Mario_Game%20over.mp3");
-let soundReady = false;
-
-function enableSoundOnce() {
-  if (soundReady) return;
-  soundReady = true;
-  // “Khởi động” nhẹ để browser cho phép phát
-  sndJump.play().then(()=>sndJump.pause());
-  sndLose.play().then(()=>sndLose.pause());
-}
-["click","keydown","touchstart","pointerdown"].forEach(e=>{
-  document.body.addEventListener(e, enableSoundOnce);
-});
-
 const state = {
   speed:6, gravity:0.6, obstacles:[],
   spawnTimer:0, spawnInterval:1000,
@@ -193,10 +177,6 @@ function jump(){
   if(dino.onGround){
     dino.vy = -12;
     dino.onGround = false;
-    if(soundReady){
-      sndJump.currentTime = 0;
-      sndJump.play();
-    }
   }
 }
 
@@ -235,10 +215,6 @@ function collides(a,b){
 
 function gameOver(){
   run = false;
-  if(soundReady){
-    sndLose.currentTime = 0;
-    sndLose.play();
-  }
   overlay.style.display = 'flex';
   msgText.textContent = 'Ý THUA RỒI 😂';
   msgSub.textContent = 'Điểm: ' + Math.floor(state.score);
