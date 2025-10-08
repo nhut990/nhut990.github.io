@@ -139,6 +139,20 @@ let overlay = document.getElementById('overlay');
 let msgText = document.getElementById('msgText');
 let msgSub = document.getElementById('msgSub');
 
+// --- Radio VOH ---
+const radio = new Audio("https://strm.voh.com.vn/radio/channel1/playlist.m3u8");
+radio.type = "application/vnd.apple.mpegurl";
+radio.preload = "none";
+radio.volume = 0.6;
+let radioPlayed = false;
+
+function playRadio(){
+  if (!radioPlayed) {
+    radioPlayed = true;
+    radio.play().catch(()=>{});
+  }
+}
+
 const state = {
   speed:6, gravity:0.6, obstacles:[],
   spawnTimer:0, spawnInterval:1000,
@@ -205,6 +219,7 @@ function startGame(){
   overlay.style.display = 'none';
   run = true;
   lastTime = performance.now();
+  playRadio(); // 🔈 Phát radio khi bắt đầu chơi
   requestAnimationFrame(loop);
 }
 document.getElementById('restart').addEventListener('click', startGame);
