@@ -7,27 +7,58 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            background: #f7f7f7;
+            background: linear-gradient(120deg, #e0eaff 0%, #f7f7f7 100%);
             margin: 0; 
             padding: 0;
+            min-height: 100vh;
+            animation: bgMove 8s infinite alternate;
+        }
+        @keyframes bgMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
         }
         .container {
             max-width: 480px;
             margin: 40px auto;
             background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-            border-radius: 10px;
-            padding: 32px 24px;
+            box-shadow: 0 8px 32px rgba(44, 108, 223, 0.09), 0 2px 8px rgba(0,0,0,.08);
+            border-radius: 16px;
+            padding: 38px 28px;
+            position: relative;
+            animation: fadeInUp 1.2s cubic-bezier(.42,.65,.27,.99);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         h1 {
             color: #2d6cdf;
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
+            font-size: 2.1em;
+            letter-spacing: 1px;
+            animation: titlePop .8s;
+        }
+        @keyframes titlePop {
+            from { transform: scale(0.9); opacity: 0.3; }
+            to { transform: scale(1); opacity: 1; }
         }
         p {
             text-align: center;
             color: #444;
             margin-bottom: 32px;
+            font-size: 1.08em;
+            animation: fadeIn 1.2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         ul {
             list-style: none;
@@ -36,35 +67,55 @@
         li {
             margin: 18px 0;
             text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: listFadeIn 0.6s forwards;
+        }
+        li:nth-child(1) { animation-delay: 0.2s; }
+        li:nth-child(2) { animation-delay: 0.4s; }
+        @keyframes listFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         a {
             display: inline-block;
             text-decoration: none;
-            background: #2d6cdf;
+            background: linear-gradient(90deg, #2d6cdf 60%, #61a0ff 100%);
             color: white;
-            padding: 12px 32px;
-            border-radius: 6px;
-            font-size: 1.1em;
-            transition: background 0.2s;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 1.14em;
+            box-shadow: 0 2px 8px rgba(44,108,223,.10);
+            transition: 
+                background 0.23s,
+                box-shadow 0.23s,
+                transform 0.18s;
         }
         a:hover {
-            background: #174d9c;
+            background: linear-gradient(90deg, #174d9c 60%, #3e7fd8 100%);
+            box-shadow: 0 8px 24px rgba(44,108,223,.12);
+            transform: translateY(-2px) scale(1.07);
         }
         .footer {
-            margin-top: 40px;
+            margin-top: 44px;
             text-align: center;
             color: #888;
-            font-size: 0.95em;
+            font-size: 1em;
+            letter-spacing: 0.5px;
+            animation: fadeIn 1.5s;
         }
         .signature {
             position: fixed;
             right: 14px;
             bottom: 10px;
-            font-size: 0.70em; /* nhỏ lại */
-            color: rgba(0,0,0,0.22); /* nhạt vừa phải */
+            font-size: 0.70em;
+            color: rgba(0,0,0,0.22);
             pointer-events: none;
             user-select: none;
             letter-spacing: 1px;
+            animation: fadeIn 3s;
         }
     </style>
 </head>
