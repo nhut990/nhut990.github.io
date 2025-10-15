@@ -98,6 +98,13 @@
             box-shadow: 0 8px 24px rgba(44,108,223,.12);
             transform: translateY(-2px) scale(1.07);
         }
+
+        /* Hiệu ứng đổi màu cho tên Minh Nhut */
+        @keyframes colorShift {
+            0% { color: #2d6cdf; }
+            50% { color: #61a0ff; }
+            100% { color: #2d6cdf; }
+        }
         .footer {
             margin-top: 44px;
             text-align: center;
@@ -106,6 +113,10 @@
             letter-spacing: 0.5px;
             animation: fadeIn 1.5s;
         }
+        .footer .name {
+            animation: colorShift 3s infinite ease-in-out;
+        }
+
         .signature {
             position: fixed;
             right: 14px;
@@ -138,7 +149,7 @@
             </li>
         </ul>
         <div class="footer">
-            Created by Minh Nhut<br>
+            Created by <span class="name">Minh Nhut</span><br>
             &copy; 2025
         </div>
     </div>
