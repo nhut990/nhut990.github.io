@@ -28,14 +28,8 @@
             animation: fadeInUp 1.2s cubic-bezier(.42,.65,.27,.99);
         }
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(40px) scale(.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         h1 {
             color: #2d6cdf;
@@ -74,10 +68,7 @@
         li:nth-child(1) { animation-delay: 0.2s; }
         li:nth-child(2) { animation-delay: 0.4s; }
         @keyframes listFadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
         a {
             display: inline-block;
@@ -88,10 +79,7 @@
             border-radius: 8px;
             font-size: 1.14em;
             box-shadow: 0 2px 8px rgba(44,108,223,.10);
-            transition: 
-                background 0.23s,
-                box-shadow 0.23s,
-                transform 0.18s;
+            transition: background 0.23s, box-shadow 0.23s, transform 0.18s;
         }
         a:hover {
             background: linear-gradient(90deg, #174d9c 60%, #3e7fd8 100%);
@@ -99,7 +87,6 @@
             transform: translateY(-2px) scale(1.07);
         }
 
-        /* Hiệu ứng đổi màu cho tên Minh Nhut */
         @keyframes colorShift {
             0% { color: #2d6cdf; }
             50% { color: #61a0ff; }
@@ -128,10 +115,53 @@
             letter-spacing: 1px;
             animation: fadeIn 3s;
         }
+
+        /* ----- Phần khung đếm ngược Giao Thừa ----- */
+        .countdown-box {
+            background: rgba(44,108,223,0.08);
+            border: 1px solid rgba(44,108,223,0.2);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+            text-align: center;
+            box-shadow: 0 0 12px rgba(44,108,223,0.08);
+            animation: fadeIn 1.2s ease;
+        }
+        #countdown {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 500;
+            line-height: 1.8;
+        }
+        .num {
+            color: #2d6cdf;
+            font-weight: 700;
+            display: inline-block;
+            animation: pulseSoft 2s ease-in-out infinite;
+        }
+        @keyframes pulseSoft {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .newyear {
+            display: block;
+            margin-top: 6px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #174d9c;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+
+        <!-- Phần đếm ngược Giao Thừa -->
+        <div class="countdown-box">
+            <div id="countdown">Đang tải...</div>
+        </div>
+
+        <!-- Nội dung gốc -->
         <h1>Chào mừng đến với Trang Chủ!</h1>
         <p>
             Đây là bộ trang liên kết đến các dịch vụ và ứng dụng do chúng tôi phát triển. Hãy chọn một liên kết bên dưới để khám phá:
@@ -153,6 +183,39 @@
             &copy; 2025
         </div>
     </div>
+
     <div class="signature">nhut117se4</div>
+
+    <script>
+      // Mốc thời gian: Giao thừa 30 Tết 2026 (23:59:59, 16/02/2026)
+      const targetDate = new Date("2026-02-16T23:59:59+07:00");
+
+      function updateCountdown() {
+        const now = new Date();
+        const diff = targetDate - now;
+        const countdown = document.getElementById("countdown");
+
+        if (diff <= 0) {
+          countdown.innerHTML = "<span class='newyear'>🎆 Chúc mừng Giao Thừa 2026! 🎆</span>";
+          clearInterval(timer);
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        countdown.innerHTML =
+          `Còn <span class="num">${days}</span> ngày 
+           <span class="num">${hours}</span> giờ 
+           <span class="num">${minutes}</span> phút 
+           <span class="num">${seconds}</span> giây<br>
+           <span class="newyear">Giao Thừa 30 Tết 2026</span>`;
+      }
+
+      updateCountdown();
+      const timer = setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
