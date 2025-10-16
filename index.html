@@ -192,6 +192,7 @@
             text-shadow: 0 0 6px rgba(255, 160, 0, 0.6);
             position: relative;
         }
+        /* Nếu dùng ::before/::after thì vẫn có hiệu ứng hoa mai nở */
         .newyear::before, .newyear::after {
             content: "🌸";
             position: relative;
@@ -315,6 +316,7 @@
         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
+        // Chèn trực tiếp bông hoa 🌸 vào nội dung, đảm bảo không bị mất khi reload hay scroll
         countdown.innerHTML =
           `Còn <span class="num">${days}</span> ngày 
            <span class="num">${hours}</span> giờ 
