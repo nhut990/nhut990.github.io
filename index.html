@@ -67,6 +67,7 @@
         }
         li:nth-child(1) { animation-delay: 0.2s; }
         li:nth-child(2) { animation-delay: 0.4s; }
+        li:nth-child(3) { animation-delay: 0.6s; }
         @keyframes listFadeIn {
             to { opacity: 1; transform: translateY(0); }
         }
@@ -116,22 +117,60 @@
             animation: fadeIn 3s;
         }
 
-        /* ----- Khung đếm ngược Giao Thừa ----- */
-        .countdown-box {
-            background: rgba(255, 234, 167, 0.25);
-            border: 1.5px solid rgba(255, 180, 0, 0.4);
+        /* ----- Khung đếm ngược Giao Thừa với hiệu ứng Tết ----- */
+        .countdown-box.decorated {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(120deg,#fffbe6 0%, #ffe5b2 100%);
+            border: 2px solid #ffb700;
             border-radius: 14px;
             padding: 18px 20px;
             margin-bottom: 24px;
             text-align: center;
-            box-shadow: 0 0 15px rgba(255, 180, 0, 0.15);
-            animation: fadeIn 1.2s ease;
+            box-shadow: 0 0 32px 0 rgba(255, 180, 0, 0.19), 0 2px 18px rgba(255,180,0,.12);
+            animation: glowBox 2s alternate infinite;
+        }
+        @keyframes glowBox {
+            0% { box-shadow: 0 0 22px #ffd70080, 0 0 0 0 #ffb700; }
+            100% { box-shadow: 0 0 38px #ffe066, 0 0 14px 8px #ffd70033; }
+        }
+        /* Canvas pháo hoa */
+        #fireworkCanvas {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            mix-blend-mode: lighten;
+        }
+        /* Hoa mai rơi */
+        #falling-flowers {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .tet-flower {
+            position: absolute;
+            font-size: 1.6em;
+            opacity: 0.85;
+            will-change: transform;
+            filter: drop-shadow(0 2px 6px #ffb70099);
+            animation: flowerFall linear infinite;
+        }
+        @keyframes flowerFall {
+            0% { transform: translateY(-30px) scale(1) rotate(0deg); opacity:0.6;}
+            90% { opacity:0.85;}
+            100% { transform: translateY(320px) scale(1.2) rotate(260deg); opacity:0.12;}
         }
         #countdown {
             font-size: 1.1rem;
             color: #333;
             font-weight: 500;
             line-height: 1.8;
+            position: relative;
+            z-index: 4;
         }
         .num {
             color: #d62828;
@@ -153,8 +192,6 @@
             text-shadow: 0 0 6px rgba(255, 160, 0, 0.6);
             position: relative;
         }
-
-        /* Trang trí hoa mai */
         .newyear::before, .newyear::after {
             content: "🌸";
             position: relative;
@@ -170,12 +207,12 @@
 </head>
 <body>
     <div class="container">
-
-        <!-- Phần đếm ngược Giao Thừa -->
-        <div class="countdown-box">
+        <!-- Khung đếm ngược Giao Thừa với hiệu ứng Tết -->
+        <div class="countdown-box decorated">
+            <canvas id="fireworkCanvas"></canvas>
             <div id="countdown">Đang tải...</div>
+            <div id="falling-flowers"></div>
         </div>
-
         <!-- Nội dung gốc -->
         <h1>Chào mừng đến với Trang Chủ!</h1>
         <p>
@@ -185,6 +222,11 @@
             <li>
                 <a href="https://nhut990.github.io/audio/" target="_blank" rel="noopener">
                     Audio &amp; Radio
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/Windows/" target="_blank" rel="noopener">
+                    Windows
                 </a>
             </li>
             <li>
@@ -198,29 +240,81 @@
             &copy; 2025
         </div>
     </div>
-
     <div class="signature">nhut117se4</div>
 
     <script>
-      // Mốc thời gian: Giao thừa 30 Tết 2026 (23:59:59, 16/02/2026)
-      const targetDate = new Date("2026-02-16T23:59:59+07:00");
+      // Pháo hoa đơn giản (Canvas)
+      function randomColor() {
+        const colors = ["#ffb700", "#d62828", "#ffe066", "#ff6f61", "#f7c948", "#ffc107"];
+        return colors[Math.floor(Math.random()*colors.length)];
+      }
+      function launchFirework(ctx, w, h) {
+        for(let i=0;i<12;i++){
+            let angle = (Math.PI * 2) * (i/12);
+            let x = w/2, y = h/2;
+            let length = 60 + Math.random()*40;
+            let endX = x + Math.cos(angle)*length;
+            let endY = y + Math.sin(angle)*length;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = randomColor();
+            ctx.lineWidth = 2.3 + Math.random()*2.2;
+            ctx.globalAlpha = 0.6 + Math.random()*0.4;
+            ctx.shadowColor = ctx.strokeStyle;
+            ctx.shadowBlur = 8 + Math.random()*6;
+            ctx.stroke();
+        }
+      }
+      // Vẽ pháo hoa nổ ngắn
+      function fireworkShow() {
+        const canvas = document.getElementById("fireworkCanvas");
+        if (!canvas) return;
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        // Số lần nổ
+        for(let i=0;i<2+(Math.random()*2);i++){
+            setTimeout(()=>{
+                launchFirework(ctx, canvas.width, canvas.height);
+            }, 120*i + Math.random()*60);
+        }
+        // Xóa pháo hoa sau chút xíu
+        setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height), 900);
+      }
+      setInterval(fireworkShow, 1400);
 
+      // Hoa mai vàng rơi
+      function createFlower() {
+        const flowerEl = document.createElement('span');
+        flowerEl.className = 'tet-flower';
+        flowerEl.innerText = '🌸';
+        flowerEl.style.left = (Math.random()*100) + '%';
+        flowerEl.style.top = '-25px';
+        flowerEl.style.animationDuration = (2.6 + Math.random()*1.8) + 's';
+        flowerEl.style.fontSize = (1.2 + Math.random()*1.5) + 'em';
+        flowerEl.style.filter = `drop-shadow(0 2px 6px #ffb70099)`;
+        document.getElementById('falling-flowers').appendChild(flowerEl);
+        setTimeout(()=>flowerEl.remove(), 3000);
+      }
+      setInterval(createFlower, 320);
+
+      // Đếm ngược Giao Thừa
+      const targetDate = new Date("2026-02-16T23:59:59+07:00");
       function updateCountdown() {
         const now = new Date();
         const diff = targetDate - now;
         const countdown = document.getElementById("countdown");
-
         if (diff <= 0) {
           countdown.innerHTML = "<span class='newyear'>🎆 Chúc mừng Giao Thừa 2026! 🎆</span>";
           clearInterval(timer);
           return;
         }
-
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
-
         countdown.innerHTML =
           `Còn <span class="num">${days}</span> ngày 
            <span class="num">${hours}</span> giờ 
@@ -228,7 +322,6 @@
            <span class="num">${seconds}</span> giây<br>
            <span class="newyear">Giao Thừa 30 Tết 2026</span>`;
       }
-
       updateCountdown();
       const timer = setInterval(updateCountdown, 1000);
     </script>
