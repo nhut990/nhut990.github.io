@@ -71,6 +71,7 @@
         li:nth-child(4) { animation-delay: 0.8s; }
         li:nth-child(5) { animation-delay: 1.0s; }
         li:nth-child(6) { animation-delay: 1.2s; }
+        li:nth-child(7) { animation-delay: 1.4s; }
         @keyframes listFadeIn {
             to { opacity: 1; transform: translateY(0); }
         }
@@ -237,6 +238,12 @@
                     Xem Mã Màu
                 </a>
             </li>
+            <!-- Liên kết mới HTML TEST ngay dưới Xem Mã Màu -->
+            <li>
+                <a href="https://nhut990.github.io/code-test/">
+                    HTML TEST
+                </a>
+            </li>
             <li>
                 <a href="https://nhut990.github.io/Windows/">
                     Windows
@@ -299,28 +306,12 @@
         canvas.width = box.offsetWidth;
         canvas.height = box.offsetHeight;
       }
-      window.addEventListener('resize', resizeFireworkCanvas);
 
-      function fireworkShow() {
-        const canvas = document.getElementById("fireworkCanvas");
-        if (!canvas) return;
-        resizeFireworkCanvas();
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        for(let i=0;i<2+(Math.random()*2);i++){
-            setTimeout(()=>{
-                launchFirework(ctx, canvas.width, canvas.height);
-            }, 120*i + Math.random()*60);
-        }
-        setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height), 900);
-      }
-      setInterval(fireworkShow, config.fireworkInterval);
-
-      // ========== Hoa mai vàng rơi: Giới hạn số lượng ==========
+      // ========== Hoa mai vàng rơi ==========
       function createFlower() {
         const flowerBox = document.getElementById('falling-flowers');
         if (!flowerBox) return;
-        if (flowerBox.childElementCount >= config.maxFlowers) return; // Giới hạn hoa trên DOM
+        if (flowerBox.childElementCount >= config.maxFlowers) return;
         const flowerEl = document.createElement('span');
         flowerEl.className = 'tet-flower';
         flowerEl.innerText = '🌸';
@@ -332,9 +323,9 @@
         flowerBox.appendChild(flowerEl);
         setTimeout(()=>flowerEl.remove(), 3000);
       }
-      setInterval(createFlower, config.flowerInterval);
 
       // ========== Đếm ngược Giao Thừa ==========
+      let timer = null;
       function updateCountdown() {
         const countdown = document.getElementById("countdown");
         if (!countdown) return;
@@ -342,7 +333,7 @@
         const diff = config.targetDate - now;
         if (diff <= 0) {
           countdown.innerHTML = "<span class='newyear'>🎆 Chúc mừng Giao Thừa 2026! 🎆</span>";
-          clearInterval(timer);
+          if (timer) clearInterval(timer);
           return;
         }
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -356,13 +347,38 @@
            <span class="num">${seconds}</span> giây<br>
            <span class="newyear">Giao Thừa 30 Tết 2026</span>`;
       }
-      updateCountdown();
-      const timer = setInterval(updateCountdown, 1000);
 
-      // ========== Đảm bảo khởi tạo hiệu ứng sau khi DOM đã sẵn sàng ==========
+      // ========== Khởi tạo hiệu ứng sau khi DOM đã sẵn sàng ==========
       document.addEventListener("DOMContentLoaded", function(){
+        // Đảm bảo canvas đã đúng kích thước trước khi vẽ
         resizeFireworkCanvas();
+
+        // Hiệu ứng pháo hoa
+        function fireworkShow() {
+          const canvas = document.getElementById("fireworkCanvas");
+          if (!canvas) return;
+          resizeFireworkCanvas();
+          const ctx = canvas.getContext("2d");
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          for(let i=0;i<2+(Math.random()*2);i++){
+              setTimeout(()=>{
+                  launchFirework(ctx, canvas.width, canvas.height);
+              }, 120*i + Math.random()*60);
+          }
+          setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height), 900);
+        }
+        setInterval(fireworkShow, config.fireworkInterval);
+        fireworkShow(); // chạy ngay lần đầu khi vào trang
+
+        // Hoa rơi
+        setInterval(createFlower, config.flowerInterval);
+
+        // Đếm ngược
         updateCountdown();
+        timer = setInterval(updateCountdown, 1000);
+
+        // Resize lại canvas khi cửa sổ thay đổi kích thước
+        window.addEventListener('resize', resizeFireworkCanvas);
       });
     </script>
 </body>
