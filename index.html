@@ -194,7 +194,6 @@
             text-shadow: 0 0 6px rgba(255, 160, 0, 0.6);
             position: relative;
         }
-        /* Nếu dùng ::before/::after thì vẫn có hiệu ứng hoa mai nở */
         .newyear::before, .newyear::after {
             content: "🌸";
             position: relative;
@@ -223,27 +222,27 @@
         </p>
         <ul>
             <li>
-                <a href="https://nhut990.github.io/audio/" target="_blank" rel="noopener">
+                <a href="https://nhut990.github.io/audio/">
                     Audio &amp; Radio
                 </a>
             </li>
             <li>
-                <a href="https://nhut990.github.io/playmidi/" target="_blank" rel="noopener">
+                <a href="https://nhut990.github.io/playmidi/">
                     Phát MIDI Trực Tuyến
                 </a>
             </li>
             <li>
-                <a href="https://nhut990.github.io/Windows/" target="_blank" rel="noopener">
+                <a href="https://nhut990.github.io/Windows/">
                     Windows
                 </a>
             </li>
             <li>
-                <a href="https://nhut990.github.io/appcuios/" target="_blank" rel="noopener">
+                <a href="https://nhut990.github.io/appcuios/">
                     Ứng Dụng Phiên Bản Cũ iOS
                 </a>
             </li>
             <li>
-                <a href="https://nhut990.github.io/Bundle/" target="_blank" rel="noopener">
+                <a href="https://nhut990.github.io/Bundle/">
                     Tìm Bundle ID App Store
                 </a>
             </li>
@@ -256,7 +255,15 @@
     <div class="signature">nhut117se4</div>
 
     <script>
-      // Pháo hoa đơn giản (Canvas)
+      // ================= Cấu hình dễ chỉnh sửa =================
+      const config = {
+        targetDate: new Date("2026-02-16T23:59:59+07:00"),
+        maxFlowers: 18,
+        flowerInterval: 320,
+        fireworkInterval: 1400
+      };
+
+      // ========== Pháo hoa: Tối ưu resize ==========
       function randomColor() {
         const colors = ["#ffb700", "#d62828", "#ffe066", "#ff6f61", "#f7c948", "#ffc107"];
         return colors[Math.floor(Math.random()*colors.length)];
@@ -279,27 +286,35 @@
             ctx.stroke();
         }
       }
-      // Vẽ pháo hoa nổ ngắn
+      function resizeFireworkCanvas() {
+        const canvas = document.getElementById("fireworkCanvas");
+        if (!canvas) return;
+        const box = canvas.parentElement;
+        canvas.width = box.offsetWidth;
+        canvas.height = box.offsetHeight;
+      }
+      window.addEventListener('resize', resizeFireworkCanvas);
+
       function fireworkShow() {
         const canvas = document.getElementById("fireworkCanvas");
         if (!canvas) return;
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
+        resizeFireworkCanvas();
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        // Số lần nổ
         for(let i=0;i<2+(Math.random()*2);i++){
             setTimeout(()=>{
                 launchFirework(ctx, canvas.width, canvas.height);
             }, 120*i + Math.random()*60);
         }
-        // Xóa pháo hoa sau chút xíu
         setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height), 900);
       }
-      setInterval(fireworkShow, 1400);
+      setInterval(fireworkShow, config.fireworkInterval);
 
-      // Hoa mai vàng rơi
+      // ========== Hoa mai vàng rơi: Giới hạn số lượng ==========
       function createFlower() {
+        const flowerBox = document.getElementById('falling-flowers');
+        if (!flowerBox) return;
+        if (flowerBox.childElementCount >= config.maxFlowers) return; // Giới hạn hoa trên DOM
         const flowerEl = document.createElement('span');
         flowerEl.className = 'tet-flower';
         flowerEl.innerText = '🌸';
@@ -308,17 +323,17 @@
         flowerEl.style.animationDuration = (2.6 + Math.random()*1.8) + 's';
         flowerEl.style.fontSize = (1.2 + Math.random()*1.5) + 'em';
         flowerEl.style.filter = `drop-shadow(0 2px 6px #ffb70099)`;
-        document.getElementById('falling-flowers').appendChild(flowerEl);
+        flowerBox.appendChild(flowerEl);
         setTimeout(()=>flowerEl.remove(), 3000);
       }
-      setInterval(createFlower, 320);
+      setInterval(createFlower, config.flowerInterval);
 
-      // Đếm ngược Giao Thừa
-      const targetDate = new Date("2026-02-16T23:59:59+07:00");
+      // ========== Đếm ngược Giao Thừa ==========
       function updateCountdown() {
-        const now = new Date();
-        const diff = targetDate - now;
         const countdown = document.getElementById("countdown");
+        if (!countdown) return;
+        const now = new Date();
+        const diff = config.targetDate - now;
         if (diff <= 0) {
           countdown.innerHTML = "<span class='newyear'>🎆 Chúc mừng Giao Thừa 2026! 🎆</span>";
           clearInterval(timer);
@@ -328,7 +343,6 @@
         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
-        // Chèn trực tiếp bông hoa 🌸 vào nội dung, đảm bảo không bị mất khi reload hay scroll
         countdown.innerHTML =
           `Còn <span class="num">${days}</span> ngày 
            <span class="num">${hours}</span> giờ 
@@ -338,6 +352,12 @@
       }
       updateCountdown();
       const timer = setInterval(updateCountdown, 1000);
+
+      // ========== Đảm bảo khởi tạo hiệu ứng sau khi DOM đã sẵn sàng ==========
+      document.addEventListener("DOMContentLoaded", function(){
+        resizeFireworkCanvas();
+        updateCountdown();
+      });
     </script>
 </body>
 </html>
