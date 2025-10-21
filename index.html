@@ -72,6 +72,7 @@
         li:nth-child(5) { animation-delay: 1.0s; }
         li:nth-child(6) { animation-delay: 1.2s; }
         li:nth-child(7) { animation-delay: 1.4s; }
+        li:nth-child(8) { animation-delay: 1.6s; }
         @keyframes listFadeIn {
             to { opacity: 1; transform: translateY(0); }
         }
@@ -114,11 +115,12 @@
             right: 14px;
             bottom: 10px;
             font-size: 0.70em;
-            color: rgba(0,0,0,0.22);
+            color: rgba(0,0,0,0.10); /* Đã làm mờ hơn nữa */
             pointer-events: none;
             user-select: none;
             letter-spacing: 1px;
             animation: fadeIn 3s;
+            transition: color 0.3s;
         }
 
         /* ----- Khung đếm ngược Giao Thừa với hiệu ứng Tết ----- */
@@ -238,10 +240,16 @@
                     Xem Mã Màu
                 </a>
             </li>
-            <!-- Liên kết mới HTML TEST ngay dưới Xem Mã Màu -->
+            <!-- Liên kết HTML TEST -->
             <li>
                 <a href="https://nhut990.github.io/code-test/">
                     HTML TEST
+                </a>
+            </li>
+            <!-- Liên kết mới TEST Màn Hình ngay dưới HTML TEST -->
+            <li>
+                <a href="https://nhut990.github.io/color/lcd/">
+                    TEST Màn Hình
                 </a>
             </li>
             <li>
