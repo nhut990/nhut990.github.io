@@ -138,49 +138,42 @@
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.3); opacity: 0.8; }
         }
-        /* Tower Noel */
+
+        /* Danh sách liên kết kiểu mới: bằng nhau, bo tròn trên */
         .tower-list {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 32px;
             position: relative;
-        }
-        .tower-list .star {
-            font-size: 2.8em;
-            color: #ffd700;
-            margin-bottom: 10px;
-            animation: starChop 1.2s infinite;
-            filter: drop-shadow(0 0 22px #fff700);
-        }
-        @keyframes starChop {
-            0%   { filter: drop-shadow(0 0 8px #ffe066) brightness(1); }
-            30%  { filter: drop-shadow(0 0 28px #ffd700) brightness(2.2); }
-            60%  { filter: drop-shadow(0 0 14px #fff700) brightness(1.5);}
-            100% { filter: drop-shadow(0 0 8px #ffe066) brightness(1); }
+            border-radius: 22px 22px 12px 12px;
+            background: #f5faff;
+            padding: 18px 0 18px 0;
+            box-shadow: 0 2px 14px #d6e9fc44;
         }
         .tower-list li {
             list-style: none;
             margin: 0;
             padding: 0;
             text-align: center;
-            position: relative;
             opacity: 0;
             animation: listFadeIn 0.7s forwards;
+            width: 90%;
+            margin: 10px 0;
         }
-        .tower-list li:nth-child(2) { animation-delay: 0.1s; }
-        .tower-list li:nth-child(3) { animation-delay: 0.2s; }
-        .tower-list li:nth-child(4) { animation-delay: 0.3s; }
-        .tower-list li:nth-child(5) { animation-delay: 0.4s; }
-        .tower-list li:nth-child(6) { animation-delay: 0.5s; }
-        .tower-list li:nth-child(7) { animation-delay: 0.6s; }
-        .tower-list li:nth-child(8) { animation-delay: 0.7s; }
-        .tower-list li:nth-child(9) { animation-delay: 0.8s; }
+        .tower-list li:nth-child(1) { animation-delay: 0.1s; }
+        .tower-list li:nth-child(2) { animation-delay: 0.2s; }
+        .tower-list li:nth-child(3) { animation-delay: 0.3s; }
+        .tower-list li:nth-child(4) { animation-delay: 0.4s; }
+        .tower-list li:nth-child(5) { animation-delay: 0.5s; }
+        .tower-list li:nth-child(6) { animation-delay: 0.6s; }
+        .tower-list li:nth-child(7) { animation-delay: 0.7s; }
+        .tower-list li:nth-child(8) { animation-delay: 0.8s; }
         @keyframes listFadeIn {
             to { opacity: 1; }
         }
         .tower-link {
-            display: inline-block;
+            display: block;
             text-decoration: none;
             color: #fff;
             font-size: 1.14em;
@@ -189,78 +182,14 @@
             box-shadow: 0 2px 8px rgba(44,108,223,.10);
             transition: background 0.23s, box-shadow 0.23s, transform 0.18s;
             background: linear-gradient(90deg, #2d6cdf 60%, #61a0ff 100%);
+            width: 100%;
+            padding: 14px 0;
+            margin: 0 auto;
         }
         .tower-link:hover {
             background: linear-gradient(90deg, #174d9c 60%, #3e7fd8 100%);
             box-shadow: 0 8px 24px rgba(44,108,223,.12);
             transform: translateY(-2px) scale(1.07);
-        }
-        .tower-list li .tower-link {
-            position: relative;
-            z-index: 1;
-        }
-        .tower-list li .lights {
-            position: absolute;
-            left: 0; right: 0; top: 50%; transform: translateY(-50%);
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        /* Đèn Noel làm lại: chỉ nhẹ nhàng đổi sáng, không blur mạnh */
-        .light-dot {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            margin: 0 5px;
-            box-shadow: 0 0 10px 2px #fff7;
-            animation: softBlink 2.8s infinite;
-        }
-        .dot-red    { background: #ff4b5c; animation-delay: 0.2s;}
-        .dot-green  { background: #43ea56; animation-delay: 0.4s;}
-        .dot-yellow { background: #ffd700; animation-delay: 0.6s;}
-        .dot-blue   { background: #3498db; animation-delay: 0.8s;}
-        .dot-pink   { background: #ff81b0; animation-delay: 1s;}
-        .dot-gradient {
-            background: linear-gradient(45deg, #fae460 35%, #ff6b6b 65%);
-        }
-        @keyframes softBlink {
-            0%   { opacity: 0.65; box-shadow: 0 0 6px 2px #fff7; }
-            20%  { opacity: 0.82; box-shadow: 0 0 16px 4px #fff9;}
-            50%  { opacity: 1;    box-shadow: 0 0 22px 9px #fffde3;}
-            80%  { opacity: 0.82; box-shadow: 0 0 16px 4px #fff9;}
-            100% { opacity: 0.65; box-shadow: 0 0 6px 2px #fff7; }
-        }
-        /* Lắc lư nhẹ từng bóng đèn cho sinh động */
-        .light-dot {
-            animation-name: softBlink, swingDot;
-            animation-duration: 2.8s, 1.7s;
-            animation-iteration-count: infinite, infinite;
-            animation-timing-function: ease-in-out, ease-in-out;
-        }
-        @keyframes swingDot {
-            0%   { transform: translateY(0) rotate(-2deg);}
-            20%  { transform: translateY(-2px) rotate(2deg);}
-            40%  { transform: translateY(2px) rotate(-3deg);}
-            60%  { transform: translateY(-1px) rotate(1deg);}
-            80%  { transform: translateY(1px) rotate(-2deg);}
-            100% { transform: translateY(0) rotate(-2deg);}
-        }
-        .tower-list li {
-            width: 100%;
-            margin: 8px 0;
-        }
-        .tower-list li .tower-link {
-            width: calc(70px + 50vw * var(--scale));
-            max-width: 100%;
-            padding: 14px 0;
-            font-size: 1.14em;
-        }
-        @media (max-width: 600px) {
-            .container { max-width: 96vw;}
-            .tower-list li .tower-link { font-size: 1em; }
         }
         .footer {
             margin-top: 44px;
@@ -289,6 +218,11 @@
             letter-spacing: 1px;
             animation: fadeIn 3s;
         }
+        @media (max-width: 600px) {
+            .container { max-width: 96vw;}
+            .tower-list li .tower-link { font-size: 1em; }
+            .tower-list { width: 98vw; }
+        }
     </style>
 </head>
 <body>
@@ -304,7 +238,7 @@
             Đây là bộ trang liên kết đến các dịch vụ và ứng dụng do chúng tôi phát triển. Hãy chọn một liên kết bên dưới để khám phá:
         </p>
         <ul class="tower-list" id="towerList">
-            <div class="star">★</div>
+            <!-- Không có ngôi sao -->
         </ul>
         <div class="footer">
             Created by <span class="name">Minh Nhựt</span><br>
@@ -387,7 +321,7 @@
         flowerBox.appendChild(flowerEl);
         setTimeout(()=>flowerEl.remove(), 3000);
       }
-      // ========== Tháp Noel ==========
+      // ========== Danh sách liên kết ==========
       const services = [
         {name: "Audio & Radio", url: "https://nhut990.github.io/audio/"},
         {name: "Phát MIDI Trực Tuyến", url: "https://nhut990.github.io/playmidi/"},
@@ -398,34 +332,16 @@
         {name: "Ứng Dụng Phiên Bản Cũ iOS", url: "https://nhut990.github.io/appcuios/"},
         {name: "Tìm Bundle ID App Store", url: "https://nhut990.github.io/Bundle/"}
       ];
-      const lightColors = ['dot-red','dot-green','dot-yellow','dot-blue','dot-pink','dot-gradient'];
       function createTower() {
         const ul = document.getElementById('towerList');
-        ul.innerHTML = '<div class="star">★</div>';
-        const count = services.length;
-        for (let i = 0; i < count; i++) {
-          // scale: li cuối là chân, rộng nhất
-          const scale = ((i + 1) / count); // li đầu nhỏ nhất, li cuối lớn nhất
+        ul.innerHTML = ''; // Không có ngôi sao
+        for (let i = 0; i < services.length; i++) {
           const li = document.createElement('li');
-          li.style.setProperty('--scale', scale);
-
-          // Đèn Noel
-          const lights = document.createElement('div');
-          lights.className = 'lights';
-          for (let j=0;j<Math.ceil(5 + scale*7);j++) {
-            const dot = document.createElement('div');
-            dot.className = 'light-dot ' + lightColors[j%lightColors.length];
-            lights.appendChild(dot);
-          }
-
-          // Link
           const a = document.createElement('a');
           a.className = 'tower-link';
           a.href = services[i].url;
           a.innerHTML = services[i].name;
-
           li.appendChild(a);
-          li.appendChild(lights);
           ul.appendChild(li);
         }
       }
@@ -460,7 +376,7 @@
         // Resize lại canvas khi cửa sổ thay đổi kích thước
         window.addEventListener('resize', resizeFireworkCanvas);
 
-        // Render tháp Noel
+        // Render danh sách liên kết
         createTower();
       });
     </script>
