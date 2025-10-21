@@ -150,11 +150,14 @@
             font-size: 2.8em;
             color: #ffd700;
             margin-bottom: 10px;
-            animation: starGlow 2s infinite alternate;
+            animation: starChop 1.2s infinite;
+            filter: drop-shadow(0 0 22px #fff700);
         }
-        @keyframes starGlow {
-            0% { filter: drop-shadow(0 0 6px #ffd700); }
-            100% { filter: drop-shadow(0 0 18px #fff700); }
+        @keyframes starChop {
+            0%   { filter: drop-shadow(0 0 8px #ffe066) brightness(1); }
+            30%  { filter: drop-shadow(0 0 28px #ffd700) brightness(2.2); }
+            60%  { filter: drop-shadow(0 0 14px #fff700) brightness(1.5);}
+            100% { filter: drop-shadow(0 0 8px #ffe066) brightness(1); }
         }
         .tower-list li {
             list-style: none;
@@ -206,15 +209,14 @@
             justify-content: space-around;
             align-items: center;
         }
-        /* Đèn Noel nâng cấp */
+        /* Đèn Noel làm lại: chỉ nhẹ nhàng đổi sáng, không blur mạnh */
         .light-dot {
-            width: 18px;
-            height: 18px;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             margin: 0 5px;
-            box-shadow: 0 0 18px 2px #fff9, 0 0 8px 4px #fff6;
-            animation: blinkGlow 2.4s infinite;
-            filter: blur(0.5px) brightness(1.4);
+            box-shadow: 0 0 10px 2px #fff7;
+            animation: softBlink 2.8s infinite;
         }
         .dot-red    { background: #ff4b5c; animation-delay: 0.2s;}
         .dot-green  { background: #43ea56; animation-delay: 0.4s;}
@@ -224,17 +226,17 @@
         .dot-gradient {
             background: linear-gradient(45deg, #fae460 35%, #ff6b6b 65%);
         }
-        @keyframes blinkGlow {
-            0%   { opacity: 0.85; filter: blur(0.5px) brightness(1.3);}
-            10%  { opacity: 1;    filter: blur(1.5px) brightness(2) drop-shadow(0 0 12px #fff9);}
-            20%  { opacity: 0.9;  filter: blur(1px) brightness(1.8);}
-            50%  { opacity: 1;    filter: blur(2px) brightness(2.6) drop-shadow(0 0 24px #fff9);}
-            80%  { opacity: 0.7;  filter: blur(0.5px) brightness(1.2);}
-            100% { opacity: 0.85; filter: blur(0.5px) brightness(1.3);}
+        @keyframes softBlink {
+            0%   { opacity: 0.65; box-shadow: 0 0 6px 2px #fff7; }
+            20%  { opacity: 0.82; box-shadow: 0 0 16px 4px #fff9;}
+            50%  { opacity: 1;    box-shadow: 0 0 22px 9px #fffde3;}
+            80%  { opacity: 0.82; box-shadow: 0 0 16px 4px #fff9;}
+            100% { opacity: 0.65; box-shadow: 0 0 6px 2px #fff7; }
         }
+        /* Lắc lư nhẹ từng bóng đèn cho sinh động */
         .light-dot {
-            animation-name: blinkGlow, swingDot;
-            animation-duration: 2.4s, 1.7s;
+            animation-name: softBlink, swingDot;
+            animation-duration: 2.8s, 1.7s;
             animation-iteration-count: infinite, infinite;
             animation-timing-function: ease-in-out, ease-in-out;
         }
