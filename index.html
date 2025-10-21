@@ -54,8 +54,91 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        /* Cây tháp Noel */
+        /* Countdown + hiệu ứng */
+        .countdown-box.decorated {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(120deg,#fffbe6 0%, #ffe5b2 100%);
+            border: 2px solid #ffb700;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+            text-align: center;
+            box-shadow: 0 0 32px 0 rgba(255, 180, 0, 0.19), 0 2px 18px rgba(255,180,0,.12);
+            animation: glowBox 2s alternate infinite;
+        }
+        @keyframes glowBox {
+            0% { box-shadow: 0 0 22px #ffd70080, 0 0 0 0 #ffb700; }
+            100% { box-shadow: 0 0 38px #ffe066, 0 0 14px 8px #ffd70033; }
+        }
+        #fireworkCanvas {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            mix-blend-mode: lighten;
+        }
+        #falling-flowers {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .tet-flower {
+            position: absolute;
+            font-size: 1.6em;
+            opacity: 0.85;
+            will-change: transform;
+            filter: drop-shadow(0 2px 6px #ffb70099);
+            animation: flowerFall linear infinite;
+        }
+        @keyframes flowerFall {
+            0% { transform: translateY(-30px) scale(1) rotate(0deg); opacity:0.6;}
+            90% { opacity:0.85;}
+            100% { transform: translateY(320px) scale(1.2) rotate(260deg); opacity:0.12;}
+        }
+        #countdown {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 500;
+            line-height: 1.8;
+            position: relative;
+            z-index: 4;
+        }
+        .num {
+            color: #d62828;
+            font-weight: 700;
+            display: inline-block;
+            animation: pulseSoft 2s ease-in-out infinite;
+        }
+        @keyframes pulseSoft {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .newyear {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #d62828;
+            text-shadow: 0 0 6px rgba(255, 160, 0, 0.6);
+            position: relative;
+        }
+        .newyear::before, .newyear::after {
+            content: "🌸";
+            position: relative;
+            top: -2px;
+            margin: 0 6px;
+            animation: bloom 2.4s ease-in-out infinite;
+        }
+        @keyframes bloom {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+        }
+        /* Tower Noel */
         .tower-list {
             display: flex;
             flex-direction: column;
@@ -82,7 +165,6 @@
             opacity: 0;
             animation: listFadeIn 0.7s forwards;
         }
-        /* Hiệu ứng li xuất hiện từ trên xuống */
         .tower-list li:nth-child(2) { animation-delay: 0.1s; }
         .tower-list li:nth-child(3) { animation-delay: 0.2s; }
         .tower-list li:nth-child(4) { animation-delay: 0.3s; }
@@ -110,7 +192,6 @@
             box-shadow: 0 8px 24px rgba(44,108,223,.12);
             transform: translateY(-2px) scale(1.07);
         }
-        /* Đèn Noel nhiều màu cho từng tầng */
         .tower-list li .tower-link {
             position: relative;
             z-index: 1;
@@ -125,23 +206,46 @@
             justify-content: space-around;
             align-items: center;
         }
+        /* Đèn Noel nâng cấp */
         .light-dot {
-            width: 15px; height: 15px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             margin: 0 5px;
-            animation: blinkDot 1.5s infinite alternate;
+            box-shadow: 0 0 18px 2px #fff9, 0 0 8px 4px #fff6;
+            animation: blinkGlow 2.4s infinite;
+            filter: blur(0.5px) brightness(1.4);
         }
-        .dot-red { background: #ff4b5c; animation-delay: 0.2s;}
-        .dot-green { background: #43ea56; animation-delay: 0.4s;}
+        .dot-red    { background: #ff4b5c; animation-delay: 0.2s;}
+        .dot-green  { background: #43ea56; animation-delay: 0.4s;}
         .dot-yellow { background: #ffd700; animation-delay: 0.6s;}
-        .dot-blue { background: #3498db; animation-delay: 0.8s;}
-        .dot-pink { background: #ff81b0; animation-delay: 1s;}
-        @keyframes blinkDot {
-            0% { filter: brightness(0.8); opacity: 0.8;}
-            50% { filter: brightness(2); opacity: 1;}
-            100% { filter: brightness(0.8); opacity: 0.8;}
+        .dot-blue   { background: #3498db; animation-delay: 0.8s;}
+        .dot-pink   { background: #ff81b0; animation-delay: 1s;}
+        .dot-gradient {
+            background: linear-gradient(45deg, #fae460 35%, #ff6b6b 65%);
         }
-        /* Tạo hiệu ứng tháp: rộng dần từ trên xuống dưới */
+        @keyframes blinkGlow {
+            0%   { opacity: 0.85; filter: blur(0.5px) brightness(1.3);}
+            10%  { opacity: 1;    filter: blur(1.5px) brightness(2) drop-shadow(0 0 12px #fff9);}
+            20%  { opacity: 0.9;  filter: blur(1px) brightness(1.8);}
+            50%  { opacity: 1;    filter: blur(2px) brightness(2.6) drop-shadow(0 0 24px #fff9);}
+            80%  { opacity: 0.7;  filter: blur(0.5px) brightness(1.2);}
+            100% { opacity: 0.85; filter: blur(0.5px) brightness(1.3);}
+        }
+        .light-dot {
+            animation-name: blinkGlow, swingDot;
+            animation-duration: 2.4s, 1.7s;
+            animation-iteration-count: infinite, infinite;
+            animation-timing-function: ease-in-out, ease-in-out;
+        }
+        @keyframes swingDot {
+            0%   { transform: translateY(0) rotate(-2deg);}
+            20%  { transform: translateY(-2px) rotate(2deg);}
+            40%  { transform: translateY(2px) rotate(-3deg);}
+            60%  { transform: translateY(-1px) rotate(1deg);}
+            80%  { transform: translateY(1px) rotate(-2deg);}
+            100% { transform: translateY(0) rotate(-2deg);}
+        }
         .tower-list li {
             width: 100%;
             margin: 8px 0;
@@ -152,7 +256,6 @@
             padding: 14px 0;
             font-size: 1.14em;
         }
-        /* Responsive cho tháp đẹp trên di động */
         @media (max-width: 600px) {
             .container { max-width: 96vw;}
             .tower-list li .tower-link { font-size: 1em; }
@@ -188,15 +291,19 @@
 </head>
 <body>
     <div class="container">
+        <!-- Khung đếm ngược Giao Thừa với hiệu ứng Tết -->
+        <div class="countdown-box decorated">
+            <canvas id="fireworkCanvas"></canvas>
+            <div id="countdown">Đang tải...</div>
+            <div id="falling-flowers"></div>
+        </div>
         <h1>Trang Chủ - Minh Nhựt</h1>
         <p>
             Đây là bộ trang liên kết đến các dịch vụ và ứng dụng do chúng tôi phát triển. Hãy chọn một liên kết bên dưới để khám phá:
         </p>
         <ul class="tower-list" id="towerList">
             <div class="star">★</div>
-            <!-- Các tầng tháp Noel (li) sẽ render bằng JS để auto scale -->
         </ul>
-        <!-- Đã xoá <div class="tree-base"></div> -->
         <div class="footer">
             Created by <span class="name">Minh Nhựt</span><br>
             &copy; 2025
@@ -204,7 +311,81 @@
     </div>
     <div class="signature">nhut117se4</div>
     <script>
-      // Danh sách dịch vụ, thứ tự như cũ (li đầu là ngọn, li cuối là chân)
+      // ========== Đếm ngược Giao Thừa ==========
+      const config = {
+        targetDate: new Date("2026-02-16T23:59:59+07:00"),
+        maxFlowers: 18,
+        flowerInterval: 320,
+        fireworkInterval: 1400
+      };
+      function updateCountdown() {
+        const countdown = document.getElementById("countdown");
+        if (!countdown) return;
+        const now = new Date();
+        const diff = config.targetDate - now;
+        if (diff <= 0) {
+          countdown.innerHTML = "<span class='newyear'>🎆 Chúc mừng Giao Thừa 2026! 🎆</span>";
+          if (window.timer) clearInterval(window.timer);
+          return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        countdown.innerHTML =
+          `Còn <span class="num">${days}</span> ngày 
+           <span class="num">${hours}</span> giờ 
+           <span class="num">${minutes}</span> phút 
+           <span class="num">${seconds}</span> giây<br>
+           <span class="newyear">Giao Thừa 30 Tết 2026</span>`;
+      }
+      // ========== Pháo hoa ==========
+      function randomColor() {
+        const colors = ["#ffb700", "#d62828", "#ffe066", "#ff6f61", "#f7c948", "#ffc107"];
+        return colors[Math.floor(Math.random()*colors.length)];
+      }
+      function launchFirework(ctx, w, h) {
+        for(let i=0;i<12;i++){
+            let angle = (Math.PI * 2) * (i/12);
+            let x = w/2, y = h/2;
+            let length = 60 + Math.random()*40;
+            let endX = x + Math.cos(angle)*length;
+            let endY = y + Math.sin(angle)*length;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = randomColor();
+            ctx.lineWidth = 2.3 + Math.random()*2.2;
+            ctx.globalAlpha = 0.6 + Math.random()*0.4;
+            ctx.shadowColor = ctx.strokeStyle;
+            ctx.shadowBlur = 8 + Math.random()*6;
+            ctx.stroke();
+        }
+      }
+      function resizeFireworkCanvas() {
+        const canvas = document.getElementById("fireworkCanvas");
+        if (!canvas) return;
+        const box = canvas.parentElement;
+        canvas.width = box.offsetWidth;
+        canvas.height = box.offsetHeight;
+      }
+      // ========== Hoa mai vàng rơi ==========
+      function createFlower() {
+        const flowerBox = document.getElementById('falling-flowers');
+        if (!flowerBox) return;
+        if (flowerBox.childElementCount >= config.maxFlowers) return;
+        const flowerEl = document.createElement('span');
+        flowerEl.className = 'tet-flower';
+        flowerEl.innerText = '🌸';
+        flowerEl.style.left = (Math.random()*100) + '%';
+        flowerEl.style.top = '-25px';
+        flowerEl.style.animationDuration = (2.6 + Math.random()*1.8) + 's';
+        flowerEl.style.fontSize = (1.2 + Math.random()*1.5) + 'em';
+        flowerEl.style.filter = `drop-shadow(0 2px 6px #ffb70099)`;
+        flowerBox.appendChild(flowerEl);
+        setTimeout(()=>flowerEl.remove(), 3000);
+      }
+      // ========== Tháp Noel ==========
       const services = [
         {name: "Audio & Radio", url: "https://nhut990.github.io/audio/"},
         {name: "Phát MIDI Trực Tuyến", url: "https://nhut990.github.io/playmidi/"},
@@ -215,8 +396,7 @@
         {name: "Ứng Dụng Phiên Bản Cũ iOS", url: "https://nhut990.github.io/appcuios/"},
         {name: "Tìm Bundle ID App Store", url: "https://nhut990.github.io/Bundle/"}
       ];
-      // Trang trí đèn nhiều màu cho từng tầng
-      const lightColors = ['dot-red','dot-green','dot-yellow','dot-blue','dot-pink'];
+      const lightColors = ['dot-red','dot-green','dot-yellow','dot-blue','dot-pink','dot-gradient'];
       function createTower() {
         const ul = document.getElementById('towerList');
         ul.innerHTML = '<div class="star">★</div>';
@@ -247,7 +427,40 @@
           ul.appendChild(li);
         }
       }
-      createTower();
+      // ========== Khởi tạo hiệu ứng sau khi DOM đã sẵn sàng ==========
+      document.addEventListener("DOMContentLoaded", function(){
+        // Đếm ngược
+        updateCountdown();
+        window.timer = setInterval(updateCountdown, 1000);
+
+        // Đảm bảo canvas pháo hoa đã đúng kích thước trước khi vẽ
+        resizeFireworkCanvas();
+        // Hiệu ứng pháo hoa
+        function fireworkShow() {
+          const canvas = document.getElementById("fireworkCanvas");
+          if (!canvas) return;
+          resizeFireworkCanvas();
+          const ctx = canvas.getContext("2d");
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          for(let i=0;i<2+(Math.random()*2);i++){
+              setTimeout(()=>{
+                  launchFirework(ctx, canvas.width, canvas.height);
+              }, 120*i + Math.random()*60);
+          }
+          setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height), 900);
+        }
+        setInterval(fireworkShow, config.fireworkInterval);
+        fireworkShow(); // chạy ngay lần đầu khi vào trang
+
+        // Hoa rơi
+        setInterval(createFlower, config.flowerInterval);
+
+        // Resize lại canvas khi cửa sổ thay đổi kích thước
+        window.addEventListener('resize', resizeFireworkCanvas);
+
+        // Render tháp Noel
+        createTower();
+      });
     </script>
 </body>
 </html>
