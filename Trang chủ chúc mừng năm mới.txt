@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ - Minh Nhựt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(120deg, #e0eaff 0%, #f7f7f7 100%);
+            margin: 0; 
+            padding: 0;
+            min-height: 100vh;
+            animation: bgMove 8s infinite alternate;
+        }
+        @keyframes bgMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+        .container {
+            max-width: 480px;
+            margin: 40px auto;
+            background: #fff;
+            box-shadow: 0 8px 32px rgba(44, 108, 223, 0.09), 0 2px 8px rgba(0,0,0,.08);
+            border-radius: 16px;
+            padding: 38px 28px;
+            position: relative;
+            animation: fadeInUp 1.2s cubic-bezier(.42,.65,.27,.99);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px) scale(.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        h1 {
+            color: #2d6cdf;
+            text-align: center;
+            margin-bottom: 18px;
+            font-size: 2.1em;
+            letter-spacing: 1px;
+            animation: titlePop .8s;
+        }
+        @keyframes titlePop {
+            from { transform: scale(0.9); opacity: 0.3; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        p {
+            text-align: center;
+            color: #444;
+            margin-bottom: 32px;
+            font-size: 1.08em;
+            animation: fadeIn 1.2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 18px 0;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: listFadeIn 0.6s forwards;
+        }
+        li:nth-child(1) { animation-delay: 0.2s; }
+        li:nth-child(2) { animation-delay: 0.4s; }
+        li:nth-child(3) { animation-delay: 0.6s; }
+        li:nth-child(4) { animation-delay: 0.8s; }
+        li:nth-child(5) { animation-delay: 1.0s; }
+        li:nth-child(6) { animation-delay: 1.2s; }
+        li:nth-child(7) { animation-delay: 1.4s; }
+        li:nth-child(8) { animation-delay: 1.6s; }
+        @keyframes listFadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        a {
+            display: inline-block;
+            text-decoration: none;
+            background: linear-gradient(90deg, #2d6cdf 60%, #61a0ff 100%);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 1.14em;
+            box-shadow: 0 2px 8px rgba(44,108,223,.10);
+            transition: background 0.23s, box-shadow 0.23s, transform 0.18s;
+        }
+        a:hover {
+            background: linear-gradient(90deg, #174d9c 60%, #3e7fd8 100%);
+            box-shadow: 0 8px 24px rgba(44,108,223,.12);
+            transform: translateY(-2px) scale(1.07);
+        }
+        @keyframes colorShift {
+            0% { color: #2d6cdf; }
+            50% { color: #61a0ff; }
+            100% { color: #2d6cdf; }
+        }
+        .footer {
+            margin-top: 44px;
+            text-align: center;
+            color: #888;
+            font-size: 1em;
+            letter-spacing: 0.5px;
+            animation: fadeIn 1.5s;
+        }
+        .footer .name {
+            animation: colorShift 3s infinite ease-in-out;
+        }
+        .signature {
+            position: fixed;
+            right: 14px;
+            bottom: 10px;
+            font-size: 0.70em;
+            color: rgba(0,0,0,0.22);
+            pointer-events: none;
+            user-select: none;
+            letter-spacing: 1px;
+            animation: fadeIn 3s;
+        }
+        .newyear-box {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #0a0a2e, #16213e, #1a1a3e);
+            border-radius: 14px;
+            padding: 0;
+            margin-bottom: 24px;
+            height: 280px;
+            box-shadow: 0 0 32px 0 rgba(255, 180, 0, 0.19), 0 2px 18px rgba(255,180,0,.12);
+        }
+        .newyear-canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .newyear-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+        .newyear-text h3 {
+            font-size: 2em;
+            color: #fff;
+            text-shadow: 0 0 20px #ff6b6b, 0 0 40px #ffd93d, 0 0 60px #6bcf7f;
+            animation: glow 2s ease-in-out infinite alternate;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .newyear-text h4 {
+            font-size: 3.5em;
+            color: #ffd700;
+            text-shadow: 0 0 30px #ff6b6b, 0 0 50px #ff1744, 0 0 70px #ffd93d;
+            animation: scale 1.5s ease-in-out infinite;
+            font-weight: bold;
+            margin: 0;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px #ff6b6b, 0 0 40px #ffd93d, 0 0 60px #6bcf7f;
+            }
+            to {
+                text-shadow: 0 0 30px #ff1744, 0 0 50px #ffd93d, 0 0 80px #00d4ff;
+            }
+        }
+        @keyframes scale {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        @media (max-width: 768px) {
+            .newyear-text h3 {
+                font-size: 1.3em;
+            }
+            .newyear-text h4 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="newyear-box">
+            <canvas class="newyear-canvas" id="fireworkCanvas"></canvas>
+            <div class="newyear-text">
+                <h3>Chúc Mừng Năm Mới</h3>
+                <h4>2026</h4>
+            </div>
+        </div>
+        <h1>Chào mừng đến với Trang Chủ!</h1>
+        <p>
+            Đây là bộ trang liên kết đến các dịch vụ và ứng dụng do chúng tôi phát triển. Hãy chọn một liên kết bên dưới để khám phá:
+        </p>
+        <ul>
+            <li>
+                <a href="https://nhut990.github.io/audio/">
+                    Audio &amp; Radio
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/playmidi/">
+                    Phát MIDI Trực Tuyến
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/color/">
+                    Xem Mã Màu
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/code-test/">
+                    HTML TEST
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/color/lcd/">
+                    TEST Màn Hình
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/Windows/">
+                    Windows
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/appcuios/">
+                    Ứng Dụng Phiên Bản Cũ iOS
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/Bundle/">
+                    Tìm Bundle ID App Store
+                </a>
+            </li>
+        </ul>
+        <div class="footer">
+            Created by <span class="name">Minh Nhựt</span><br>
+            &copy; 2025
+        </div>
+    </div>
+    <div class="signature">nhut117se4</div>
+    <script>
+        const canvas = document.getElementById('fireworkCanvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() {
+            const box = canvas.parentElement;
+            canvas.width = box.offsetWidth;
+            canvas.height = box.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 3 + 1;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 8,
+                    y: (Math.random() - 0.5) * 8
+                };
+                this.gravity = 0.1;
+                this.friction = 0.98;
+                this.opacity = 1;
+                this.fade = Math.random() * 0.02 + 0.01;
+            }
+            update() {
+                this.velocity.y += this.gravity;
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.opacity -= this.fade;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.closePath();
+                ctx.restore();
+            }
+        }
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.targetY = Math.random() * canvas.height * 0.4 + 50;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 2,
+                    y: -Math.random() * 5 - 8
+                };
+                this.exploded = false;
+                this.particles = [];
+                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                this.trail = [];
+            }
+            update() {
+                if (!this.exploded) {
+                    this.trail.push({ x: this.x, y: this.y });
+                    if (this.trail.length > 10) this.trail.shift();
+                    this.velocity.y += 0.2;
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    if (this.velocity.y >= 0) {
+                        this.explode();
+                    }
+                } else {
+                    for (let i = this.particles.length - 1; i >= 0; i--) {
+                        this.particles[i].update();
+                        if (this.particles[i].opacity <= 0) {
+                            this.particles.splice(i, 1);
+                        }
+                    }
+                }
+            }
+            explode() {
+                this.exploded = true;
+                const particleCount = Math.random() * 50 + 80;
+                for (let i = 0; i < particleCount; i++) {
+                    this.particles.push(new Particle(this.x, this.y, this.color));
+                }
+            }
+            draw() {
+                if (!this.exploded) {
+                    ctx.beginPath();
+                    for (let i = 0; i < this.trail.length; i++) {
+                        ctx.lineTo(this.trail[i].x, this.trail[i].y);
+                    }
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                } else {
+                    this.particles.forEach(particle => particle.draw());
+                }
+            }
+        }
+        let fireworks = [];
+        function createFirework() {
+            const x = Math.random() * canvas.width;
+            const y = canvas.height;
+            fireworks.push(new Firework(x, y));
+        }
+        function animate() {
+            ctx.fillStyle = 'rgba(10, 10, 46, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if (Math.random() < 0.08) {
+                createFirework();
+            }
+            for (let i = fireworks.length - 1; i >= 0; i--) {
+                fireworks[i].update();
+                fireworks[i].draw();
+                if (fireworks[i].exploded && fireworks[i].particles.length === 0) {
+                    fireworks.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        for (let i = 0; i < 3; i++) {
+            setTimeout(createFirework, i * 300);
+        }
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = canvas.height;
+            fireworks.push(new Firework(x, y));
+        });
+        animate();
+    </script>
+</body>
+</html>
