@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -74,6 +73,14 @@
         li:nth-child(6) { animation-delay: 1.2s; }
         li:nth-child(7) { animation-delay: 1.4s; }
         li:nth-child(8) { animation-delay: 1.6s; }
+        li:nth-child(9) { animation-delay: 1.8s; }
+        li:nth-child(10) { animation-delay: 2.0s; }
+        li:nth-child(11) { animation-delay: 2.2s; }
+        li:nth-child(12) { animation-delay: 2.4s; }
+        li:nth-child(13) { animation-delay: 2.6s; }
+        li:nth-child(14) { animation-delay: 2.8s; }
+        li:nth-child(15) { animation-delay: 3.0s; }
+        li:nth-child(16) { animation-delay: 3.2s; }
         @keyframes listFadeIn {
             to { opacity: 1; transform: translateY(0); }
         }
@@ -120,6 +127,7 @@
             letter-spacing: 1px;
             animation: fadeIn 3s;
         }
+        /* Khung chúc mừng năm mới và pháo hoa */
         .newyear-box {
             position: relative;
             overflow: hidden;
@@ -190,6 +198,7 @@
 </head>
 <body>
     <div class="container">
+        <!-- Khung chúc mừng năm mới và pháo hoa -->
         <div class="newyear-box">
             <canvas class="newyear-canvas" id="fireworkCanvas"></canvas>
             <div class="newyear-text">
@@ -208,18 +217,8 @@
                 </a>
             </li>
             <li>
-                <a href="https://nhut990.github.io/playmidi/">
-                    Phát MIDI Trực Tuyến
-                </a>
-            </li>
-            <li>
                 <a href="https://nhut990.github.io/color/">
                     Xem Mã Màu
-                </a>
-            </li>
-            <li>
-                <a href="https://nhut990.github.io/code-test/">
-                    HTML TEST
                 </a>
             </li>
             <li>
@@ -228,8 +227,33 @@
                 </a>
             </li>
             <li>
+                <a href="https://nhut990.github.io/camtest/">
+                    TEST Camera - Micro
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/piano/">
+                    Giả Lập Piano
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/piano/chord/">
+                    🎹 Hợp Âm Piano
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/maps/">
+                    Xem Địa Chỉ Mới Sau Sáp Nhập
+                </a>
+            </li>
+            <li>
                 <a href="https://nhut990.github.io/Windows/">
                     Windows
+                </a>
+            </li>
+            <li>
+                <a href="https://nhut990.github.io/lich/">
+                    Lịch
                 </a>
             </li>
             <li>
