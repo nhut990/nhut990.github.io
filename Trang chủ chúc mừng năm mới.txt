@@ -5,6 +5,7 @@
     <title>Trang Chủ - Minh Nhựt</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* ---------- Cơ bản & layout ---------- */
         body { 
             font-family: Arial, sans-serif; 
             background: linear-gradient(120deg, #e0eaff 0%, #f7f7f7 100%);
@@ -100,6 +101,7 @@
             box-shadow: 0 8px 24px rgba(44,108,223,.12);
             transform: translateY(-2px) scale(1.07);
         }
+
         @keyframes colorShift {
             0% { color: #2d6cdf; }
             50% { color: #61a0ff; }
@@ -116,6 +118,7 @@
         .footer .name {
             animation: colorShift 3s infinite ease-in-out;
         }
+
         .signature {
             position: fixed;
             right: 14px;
@@ -127,85 +130,75 @@
             letter-spacing: 1px;
             animation: fadeIn 3s;
         }
-        /* Khung chúc mừng năm mới và pháo hoa */
+
+        /* ---------- Khung Chúc Mừng Năm Mới (thay thế khung đếm ngược & hoa mai) ---------- */
+        :root { --box-width: 480px; }
         .newyear-box {
             position: relative;
-            overflow: hidden;
+            width: 100%;
+            max-width: var(--box-width);
+            height: 220px;
             background: linear-gradient(to bottom, #0a0a2e, #16213e, #1a1a3e);
             border-radius: 14px;
-            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 24px rgba(255, 200, 50, 0.08);
             margin-bottom: 24px;
-            height: 280px;
-            box-shadow: 0 0 32px 0 rgba(255, 180, 0, 0.19), 0 2px 18px rgba(255,180,0,.12);
         }
         .newyear-canvas {
-            display: block;
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
+            display: block;
             width: 100%;
             height: 100%;
+            z-index: 2;
+            pointer-events: auto;
         }
         .newyear-text {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
+            transform: translate(-50%,-50%);
             z-index: 10;
+            text-align: center;
+            pointer-events: none;
+            user-select: none;
+            width: 100%;
         }
         .newyear-text h3 {
-            font-size: 2em;
+            margin: 0 0 8px 0;
             color: #fff;
-            text-shadow: 0 0 20px #ff6b6b, 0 0 40px #ffd93d, 0 0 60px #6bcf7f;
-            animation: glow 2s ease-in-out infinite alternate;
-            margin-bottom: 10px;
-            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 18px rgba(255,100,100,0.35);
         }
         .newyear-text h4 {
-            font-size: 3.5em;
-            color: #ffd700;
-            text-shadow: 0 0 30px #ff6b6b, 0 0 50px #ff1744, 0 0 70px #ffd93d;
-            animation: scale 1.5s ease-in-out infinite;
-            font-weight: bold;
             margin: 0;
+            color: #ffd700;
+            font-size: 3.2rem;
+            font-weight: 800;
+            text-shadow: 0 0 30px rgba(255,100,100,0.25), 0 0 50px rgba(255,215,0,0.18);
         }
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 20px #ff6b6b, 0 0 40px #ffd93d, 0 0 60px #6bcf7f;
-            }
-            to {
-                text-shadow: 0 0 30px #ff1744, 0 0 50px #ffd93d, 0 0 80px #00d4ff;
-            }
+        @media (max-width:420px) {
+            .newyear-text h4 { font-size: 2.2rem; }
+            .newyear-box { height: 180px; }
         }
-        @keyframes scale {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
-        @media (max-width: 768px) {
-            .newyear-text h3 {
-                font-size: 1.3em;
-            }
-            .newyear-text h4 {
-                font-size: 2.2em;
-            }
-        }
+
+        /* small accessibility hint for decorative canvas */
+        .newyear-box[aria-hidden="true"] .newyear-canvas { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Khung chúc mừng năm mới và pháo hoa -->
-        <div class="newyear-box">
-            <canvas class="newyear-canvas" id="fireworkCanvas"></canvas>
-            <div class="newyear-text">
+        <!-- Khung chúc mừng năm mới (thay thế vị trí khung đếm ngược + hoa mai) -->
+        <div class="newyear-box" aria-hidden="false">
+            <canvas id="fireworkCanvas" class="newyear-canvas" aria-hidden="false"></canvas>
+            <div class="newyear-text" aria-hidden="true">
                 <h3>Chúc Mừng Năm Mới</h3>
                 <h4>2026</h4>
             </div>
         </div>
+
+        <!-- Nội dung gốc -->
         <h1>Chào mừng đến với Trang Chủ!</h1>
         <p>
             Đây là bộ trang liên kết đến các dịch vụ và ứng dụng do chúng tôi phát triển. Hãy chọn một liên kết bên dưới để khám phá:
@@ -236,6 +229,7 @@
                     Giả Lập Piano
                 </a>
             </li>
+            <!-- Liên kết mới nằm dưới Giả Lập Piano -->
             <li>
                 <a href="https://nhut990.github.io/piano/chord/">
                     🎹 Hợp Âm Piano
@@ -273,139 +267,157 @@
         </div>
     </div>
     <div class="signature">nhut117se4</div>
+
     <script>
-        const canvas = document.getElementById('fireworkCanvas');
-        const ctx = canvas.getContext('2d');
-        function resizeCanvas() {
-            const box = canvas.parentElement;
-            canvas.width = box.offsetWidth;
-            canvas.height = box.offsetHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        class Particle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.radius = Math.random() * 3 + 1;
-                this.velocity = {
-                    x: (Math.random() - 0.5) * 8,
-                    y: (Math.random() - 0.5) * 8
-                };
-                this.gravity = 0.1;
-                this.friction = 0.98;
-                this.opacity = 1;
-                this.fade = Math.random() * 0.02 + 0.01;
+        // ---------- Fireworks cho khung Chúc Mừng Năm Mới ----------
+        (function () {
+            const canvas = document.getElementById('fireworkCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d', { alpha: true });
+
+            function resizeCanvas() {
+                const rect = canvas.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+                canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
-            update() {
-                this.velocity.y += this.gravity;
-                this.velocity.x *= this.friction;
-                this.velocity.y *= this.friction;
-                this.x += this.velocity.x;
-                this.y += this.velocity.y;
-                this.opacity -= this.fade;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.opacity;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.closePath();
-                ctx.restore();
-            }
-        }
-        class Firework {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.targetY = Math.random() * canvas.height * 0.4 + 50;
-                this.velocity = {
-                    x: (Math.random() - 0.5) * 2,
-                    y: -Math.random() * 5 - 8
-                };
-                this.exploded = false;
-                this.particles = [];
-                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                this.trail = [];
-            }
-            update() {
-                if (!this.exploded) {
-                    this.trail.push({ x: this.x, y: this.y });
-                    if (this.trail.length > 10) this.trail.shift();
-                    this.velocity.y += 0.2;
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            class Particle {
+                constructor(x, y, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.radius = Math.random() * 3 + 1;
+                    const speed = Math.random() * 5 + 2;
+                    const angle = Math.random() * Math.PI * 2;
+                    this.velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+                    this.gravity = 0.06;
+                    this.friction = 0.995;
+                    this.opacity = 1;
+                    this.fade = Math.random() * 0.015 + 0.008;
+                }
+                update() {
+                    this.velocity.y += this.gravity;
+                    this.velocity.x *= this.friction;
+                    this.velocity.y *= this.friction;
                     this.x += this.velocity.x;
                     this.y += this.velocity.y;
-                    if (this.velocity.y >= 0) {
-                        this.explode();
-                    }
-                } else {
-                    for (let i = this.particles.length - 1; i >= 0; i--) {
-                        this.particles[i].update();
-                        if (this.particles[i].opacity <= 0) {
-                            this.particles.splice(i, 1);
+                    this.opacity -= this.fade;
+                }
+                draw(ctx) {
+                    if (this.opacity <= 0) return;
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, this.opacity);
+                    ctx.beginPath();
+                    ctx.fillStyle = this.color;
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                    ctx.restore();
+                }
+            }
+
+            class Firework {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.velocity = { x: (Math.random() - 0.5) * 2, y: - (Math.random() * 6 + 8) };
+                    this.exploded = false;
+                    this.particles = [];
+                    this.color = `hsl(${Math.floor(Math.random() * 360)},100%,55%)`;
+                    this.trail = [];
+                }
+                update(canvasHeight) {
+                    if (!this.exploded) {
+                        this.trail.push({ x: this.x, y: this.y });
+                        if (this.trail.length > 8) this.trail.shift();
+                        this.velocity.y += 0.18;
+                        this.x += this.velocity.x;
+                        this.y += this.velocity.y;
+                        // explode when velocity.y >= 0 (peak) or it reaches upper area
+                        if (this.velocity.y >= 0 || this.y < canvasHeight * 0.15) {
+                            this.explode();
+                        }
+                    } else {
+                        for (let i = this.particles.length - 1; i >= 0; i--) {
+                            this.particles[i].update();
+                            if (this.particles[i].opacity <= 0) this.particles.splice(i, 1);
                         }
                     }
                 }
-            }
-            explode() {
-                this.exploded = true;
-                const particleCount = Math.random() * 50 + 80;
-                for (let i = 0; i < particleCount; i++) {
-                    this.particles.push(new Particle(this.x, this.y, this.color));
-                }
-            }
-            draw() {
-                if (!this.exploded) {
-                    ctx.beginPath();
-                    for (let i = 0; i < this.trail.length; i++) {
-                        ctx.lineTo(this.trail[i].x, this.trail[i].y);
+                explode() {
+                    this.exploded = true;
+                    const count = Math.floor(Math.random() * 80 + 60);
+                    for (let i = 0; i < count; i++) {
+                        this.particles.push(new Particle(this.x, this.y, this.color));
                     }
-                    ctx.strokeStyle = this.color;
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                } else {
-                    this.particles.forEach(particle => particle.draw());
+                }
+                draw(ctx) {
+                    if (!this.exploded) {
+                        ctx.beginPath();
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = this.color;
+                        for (let i = 0; i < this.trail.length; i++) {
+                            const p = this.trail[i];
+                            if (i === 0) ctx.moveTo(p.x, p.y);
+                            else ctx.lineTo(p.x, p.y);
+                        }
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.fillStyle = this.color;
+                        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        this.particles.forEach(p => p.draw(ctx));
+                    }
                 }
             }
-        }
-        let fireworks = [];
-        function createFirework() {
-            const x = Math.random() * canvas.width;
-            const y = canvas.height;
-            fireworks.push(new Firework(x, y));
-        }
-        function animate() {
-            ctx.fillStyle = 'rgba(10, 10, 46, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            if (Math.random() < 0.08) {
-                createFirework();
+
+            let fireworks = [];
+
+            function createFirework(x) {
+                const startX = (typeof x === 'number') ? x : Math.random() * canvas.clientWidth;
+                const startY = canvas.clientHeight;
+                fireworks.push(new Firework(startX, startY));
             }
-            for (let i = fireworks.length - 1; i >= 0; i--) {
-                fireworks[i].update();
-                fireworks[i].draw();
-                if (fireworks[i].exploded && fireworks[i].particles.length === 0) {
-                    fireworks.splice(i, 1);
+
+            function animate() {
+                // slight trail by painting a translucent rect
+                ctx.fillStyle = 'rgba(10, 10, 30, 0.18)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (Math.random() < 0.06) createFirework();
+
+                for (let i = fireworks.length - 1; i >= 0; i--) {
+                    const fw = fireworks[i];
+                    fw.update(canvas.clientHeight);
+                    fw.draw(ctx);
+                    if (fw.exploded && fw.particles.length === 0) fireworks.splice(i, 1);
                 }
+
+                requestAnimationFrame(animate);
             }
-            requestAnimationFrame(animate);
-        }
-        for (let i = 0; i < 3; i++) {
-            setTimeout(createFirework, i * 300);
-        }
-        canvas.addEventListener('click', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = canvas.height;
-            fireworks.push(new Firework(x, y));
-        });
-        animate();
+
+            // Initial bursts
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createFirework(), i * 300);
+            }
+
+            // Click to launch
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                createFirework(x);
+            });
+
+            // Start animation
+            animate();
+        })();
     </script>
 </body>
 </html>
