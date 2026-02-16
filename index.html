@@ -5,6 +5,7 @@
     <title>Trang Chủ - Minh Nhựt</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* ---------- Cơ bản & layout ---------- */
         body { 
             font-family: Arial, sans-serif; 
             background: linear-gradient(120deg, #e0eaff 0%, #f7f7f7 100%);
@@ -130,102 +131,73 @@
             animation: fadeIn 3s;
         }
 
-        /* ----- Khung đếm ngược Giao Thừa với hiệu ứng Tết ----- */
-        .countdown-box.decorated {
+        /* ---------- Khung Chúc Mừng Năm Mới (thay thế khung đếm ngược & hoa mai) ---------- */
+        :root { --box-width: 480px; }
+        .newyear-box {
             position: relative;
-            overflow: hidden;
-            background: linear-gradient(120deg,#fffbe6 0%, #ffe5b2 100%);
-            border: 2px solid #ffb700;
+            width: 100%;
+            max-width: var(--box-width);
+            height: 220px;
+            background: linear-gradient(to bottom, #0a0a2e, #16213e, #1a1a3e);
             border-radius: 14px;
-            padding: 18px 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 24px rgba(255, 200, 50, 0.08);
             margin-bottom: 24px;
-            text-align: center;
-            box-shadow: 0 0 32px 0 rgba(255, 180, 0, 0.19), 0 2px 18px rgba(255,180,0,.12);
-            animation: glowBox 2s alternate infinite;
         }
-        @keyframes glowBox {
-            0% { box-shadow: 0 0 22px #ffd70080, 0 0 0 0 #ffb700; }
-            100% { box-shadow: 0 0 38px #ffe066, 0 0 14px 8px #ffd70033; }
-        }
-        /* Canvas pháo hoa */
-        #fireworkCanvas {
+        .newyear-canvas {
             position: absolute;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
             z-index: 2;
-            mix-blend-mode: lighten;
+            pointer-events: auto;
         }
-        /* Hoa mai rơi */
-        #falling-flowers {
+        .newyear-text {
             position: absolute;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            z-index: 10;
+            text-align: center;
             pointer-events: none;
-            z-index: 3;
+            user-select: none;
+            width: 100%;
         }
-        .tet-flower {
-            position: absolute;
-            font-size: 1.6em;
-            opacity: 0.85;
-            will-change: transform;
-            filter: drop-shadow(0 2px 6px #ffb70099);
-            animation: flowerFall linear infinite;
-        }
-        @keyframes flowerFall {
-            0% { transform: translateY(-30px) scale(1) rotate(0deg); opacity:0.6;}
-            90% { opacity:0.85;}
-            100% { transform: translateY(320px) scale(1.2) rotate(260deg); opacity:0.12;}
-        }
-        #countdown {
+        .newyear-text h3 {
+            margin: 0 0 8px 0;
+            color: #fff;
             font-size: 1.1rem;
-            color: #333;
-            font-weight: 500;
-            line-height: 1.8;
-            position: relative;
-            z-index: 4;
+            letter-spacing: 1px;
+            text-shadow: 0 0 18px rgba(255,100,100,0.35);
         }
-        .num {
-            color: #d62828;
-            font-weight: 700;
-            display: inline-block;
-            animation: pulseSoft 2s ease-in-out infinite;
+        .newyear-text h4 {
+            margin: 0;
+            color: #ffd700;
+            font-size: 3.2rem;
+            font-weight: 800;
+            text-shadow: 0 0 30px rgba(255,100,100,0.25), 0 0 50px rgba(255,215,0,0.18);
         }
-        @keyframes pulseSoft {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1); }
+        @media (max-width:420px) {
+            .newyear-text h4 { font-size: 2.2rem; }
+            .newyear-box { height: 180px; }
         }
-        .newyear {
-            display: inline-block;
-            margin-top: 8px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #d62828;
-            text-shadow: 0 0 6px rgba(255, 160, 0, 0.6);
-            position: relative;
-        }
-        .newyear::before, .newyear::after {
-            content: "🌸";
-            position: relative;
-            top: -2px;
-            margin: 0 6px;
-            animation: bloom 2.4s ease-in-out infinite;
-        }
-        @keyframes bloom {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.8; }
-        }
+
+        /* small accessibility hint for decorative canvas */
+        .newyear-box[aria-hidden="true"] .newyear-canvas { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Khung đếm ngược Giao Thừa với hiệu ứng Tết -->
-        <div class="countdown-box decorated">
-            <canvas id="fireworkCanvas"></canvas>
-            <div id="countdown">Đang tải...</div>
-            <div id="falling-flowers"></div>
+        <!-- Khung chúc mừng năm mới (thay thế vị trí khung đếm ngược + hoa mai) -->
+        <div class="newyear-box" aria-hidden="false">
+            <canvas id="fireworkCanvas" class="newyear-canvas" aria-hidden="false"></canvas>
+            <div class="newyear-text" aria-hidden="true">
+                <h3>Chúc Mừng Năm Mới</h3>
+                <h4>2026</h4>
+            </div>
         </div>
+
         <!-- Nội dung gốc -->
         <h1>Chào mừng đến với Trang Chủ!</h1>
         <p>
@@ -297,118 +269,155 @@
     <div class="signature">nhut117se4</div>
 
     <script>
-      // ================= Cấu hình dễ chỉnh sửa =================
-      const config = {
-        targetDate: new Date("2026-02-16T23:59:59+07:00"),
-        maxFlowers: 18,
-        flowerInterval: 320,
-        fireworkInterval: 1400
-      };
+        // ---------- Fireworks cho khung Chúc Mừng Năm Mới ----------
+        (function () {
+            const canvas = document.getElementById('fireworkCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d', { alpha: true });
 
-      // ========== Pháo hoa: Tối ưu resize ==========
-      function randomColor() {
-        const colors = ["#ffb700", "#d62828", "#ffe066", "#ff6f61", "#f7c948", "#ffc107"];
-        return colors[Math.floor(Math.random()*colors.length)];
-      }
-      function launchFirework(ctx, w, h) {
-        for(let i=0;i<12;i++){
-            let angle = (Math.PI * 2) * (i/12);
-            let x = w/2, y = h/2;
-            let length = 60 + Math.random()*40;
-            let endX = x + Math.cos(angle)*length;
-            let endY = y + Math.sin(angle)*length;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(endX, endY);
-            ctx.strokeStyle = randomColor();
-            ctx.lineWidth = 2.3 + Math.random()*2.2;
-            ctx.globalAlpha = 0.6 + Math.random()*0.4;
-            ctx.shadowColor = ctx.strokeStyle;
-            ctx.shadowBlur = 8 + Math.random()*6;
-            ctx.stroke();
-        }
-      }
-      function resizeFireworkCanvas() {
-        const canvas = document.getElementById("fireworkCanvas");
-        if (!canvas) return;
-        const box = canvas.parentElement;
-        canvas.width = box.offsetWidth;
-        canvas.height = box.offsetHeight;
-      }
+            function resizeCanvas() {
+                const rect = canvas.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+                canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
 
-      // ========== Hoa mai vàng rơi ==========
-      function createFlower() {
-        const flowerBox = document.getElementById('falling-flowers');
-        if (!flowerBox) return;
-        if (flowerBox.childElementCount >= config.maxFlowers) return;
-        const flowerEl = document.createElement('span');
-        flowerEl.className = 'tet-flower';
-        flowerEl.innerText = '🌸';
-        flowerEl.style.left = (Math.random()*100) + '%';
-        flowerEl.style.top = '-25px';
-        flowerEl.style.animationDuration = (2.6 + Math.random()*1.8) + 's';
-        flowerEl.style.fontSize = (1.2 + Math.random()*1.5) + 'em';
-        flowerEl.style.filter = `drop-shadow(0 2px 6px #ffb70099)`;
-        flowerBox.appendChild(flowerEl);
-        setTimeout(()=>flowerEl.remove(), 3000);
-      }
+            class Particle {
+                constructor(x, y, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.radius = Math.random() * 3 + 1;
+                    const speed = Math.random() * 5 + 2;
+                    const angle = Math.random() * Math.PI * 2;
+                    this.velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+                    this.gravity = 0.06;
+                    this.friction = 0.995;
+                    this.opacity = 1;
+                    this.fade = Math.random() * 0.015 + 0.008;
+                }
+                update() {
+                    this.velocity.y += this.gravity;
+                    this.velocity.x *= this.friction;
+                    this.velocity.y *= this.friction;
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    this.opacity -= this.fade;
+                }
+                draw(ctx) {
+                    if (this.opacity <= 0) return;
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, this.opacity);
+                    ctx.beginPath();
+                    ctx.fillStyle = this.color;
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                    ctx.restore();
+                }
+            }
 
-      // ========== Đếm ngược Giao Thừa ==========
-      let timer = null;
-      function updateCountdown() {
-        const countdown = document.getElementById("countdown");
-        if (!countdown) return;
-        const now = new Date();
-        const diff = config.targetDate - now;
-        if (diff <= 0) {
-          countdown.innerHTML = "<span class='newyear'>🎆 Chúc mừng Giao Thừa 2026! 🎆</span>";
-          if (timer) clearInterval(timer);
-          return;
-        }
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-        countdown.innerHTML =
-          `Còn <span class="num">${days}</span> ngày 
-           <span class="num">${hours}</span> giờ 
-           <span class="num">${minutes}</span> phút 
-           <span class="num">${seconds}</span> giây<br>
-           <span class="newyear">Giao Thừa 29 Tết 2026</span>`;
-      }
+            class Firework {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.velocity = { x: (Math.random() - 0.5) * 2, y: - (Math.random() * 6 + 8) };
+                    this.exploded = false;
+                    this.particles = [];
+                    this.color = `hsl(${Math.floor(Math.random() * 360)},100%,55%)`;
+                    this.trail = [];
+                }
+                update(canvasHeight) {
+                    if (!this.exploded) {
+                        this.trail.push({ x: this.x, y: this.y });
+                        if (this.trail.length > 8) this.trail.shift();
+                        this.velocity.y += 0.18;
+                        this.x += this.velocity.x;
+                        this.y += this.velocity.y;
+                        // explode when velocity.y >= 0 (peak) or it reaches upper area
+                        if (this.velocity.y >= 0 || this.y < canvasHeight * 0.15) {
+                            this.explode();
+                        }
+                    } else {
+                        for (let i = this.particles.length - 1; i >= 0; i--) {
+                            this.particles[i].update();
+                            if (this.particles[i].opacity <= 0) this.particles.splice(i, 1);
+                        }
+                    }
+                }
+                explode() {
+                    this.exploded = true;
+                    const count = Math.floor(Math.random() * 80 + 60);
+                    for (let i = 0; i < count; i++) {
+                        this.particles.push(new Particle(this.x, this.y, this.color));
+                    }
+                }
+                draw(ctx) {
+                    if (!this.exploded) {
+                        ctx.beginPath();
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = this.color;
+                        for (let i = 0; i < this.trail.length; i++) {
+                            const p = this.trail[i];
+                            if (i === 0) ctx.moveTo(p.x, p.y);
+                            else ctx.lineTo(p.x, p.y);
+                        }
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.fillStyle = this.color;
+                        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        this.particles.forEach(p => p.draw(ctx));
+                    }
+                }
+            }
 
-      // ========== Khởi tạo hiệu ứng sau khi DOM đã sẵn sàng ==========
-      document.addEventListener("DOMContentLoaded", function(){
-        // Đảm bảo canvas đã đúng kích thước trước khi vẽ
-        resizeFireworkCanvas();
+            let fireworks = [];
 
-        // Hiệu ứng pháo hoa
-        function fireworkShow() {
-          const canvas = document.getElementById("fireworkCanvas");
-          if (!canvas) return;
-          resizeFireworkCanvas();
-          const ctx = canvas.getContext("2d");
-          ctx.clearRect(0,0,canvas.width,canvas.height);
-          for(let i=0;i<2+(Math.random()*2);i++){
-              setTimeout(()=>{
-                  launchFirework(ctx, canvas.width, canvas.height);
-              }, 120*i + Math.random()*60);
-          }
-          setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height), 900);
-        }
-        setInterval(fireworkShow, config.fireworkInterval);
-        fireworkShow(); // chạy ngay lần đầu khi vào trang
+            function createFirework(x) {
+                const startX = (typeof x === 'number') ? x : Math.random() * canvas.clientWidth;
+                const startY = canvas.clientHeight;
+                fireworks.push(new Firework(startX, startY));
+            }
 
-        // Hoa rơi
-        setInterval(createFlower, config.flowerInterval);
+            function animate() {
+                // slight trail by painting a translucent rect
+                ctx.fillStyle = 'rgba(10, 10, 30, 0.18)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Đếm ngược
-        updateCountdown();
-        timer = setInterval(updateCountdown, 1000);
+                if (Math.random() < 0.06) createFirework();
 
-        // Resize lại canvas khi cửa sổ thay đổi kích thước
-        window.addEventListener('resize', resizeFireworkCanvas);
-      });
+                for (let i = fireworks.length - 1; i >= 0; i--) {
+                    const fw = fireworks[i];
+                    fw.update(canvas.clientHeight);
+                    fw.draw(ctx);
+                    if (fw.exploded && fw.particles.length === 0) fireworks.splice(i, 1);
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            // Initial bursts
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createFirework(), i * 300);
+            }
+
+            // Click to launch
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                createFirework(x);
+            });
+
+            // Start animation
+            animate();
+        })();
     </script>
 </body>
 </html>
