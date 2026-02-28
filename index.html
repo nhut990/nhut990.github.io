@@ -128,10 +128,101 @@
             gap: 16px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: var(--shadow-md);
-            border: 1px solid var(--border);
+            border: 2px solid transparent;
+            background-clip: padding-box;
             position: relative;
             overflow: hidden;
             width: 100%;
+        }
+
+        .card {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(124, 58, 237, 0.15)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(1) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(59, 130, 246, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(2) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(3) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(236, 72, 153, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(4) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(37, 99, 235, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(5) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(124, 58, 237, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(6) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(236, 72, 153, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(7) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(37, 99, 235, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(8) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(59, 130, 246, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(9) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(236, 72, 153, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(10) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(11) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(236, 72, 153, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(12) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(37, 99, 235, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(13) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(124, 58, 237, 0.2)) border-box;
+            border: 2px solid transparent;
+        }
+
+        .card:nth-child(14) {
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(236, 72, 153, 0.2)) border-box;
+            border: 2px solid transparent;
         }
 
         .card::before {
@@ -150,7 +241,6 @@
         .card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-lg);
-            border-color: var(--primary-light);
         }
 
         .card:hover::before {
