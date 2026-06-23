@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hợp Âm Piano - Nâng Cao</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 100%; margin: 0 auto;
+            background: white; border-radius: 15px;
+            padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 { text-align: center; color: #333; margin-bottom: 15px; font-size: 24px; }
+        .chord-selector { margin-bottom: 20px; }
+        .selector-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+        select {
+            flex: 1; min-width: 120px; padding: 10px; font-size: 16px;
+            border: 2px solid #667eea; border-radius: 8px; background: white; cursor: pointer;
+        }
+        .play-buttons { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;}
+        .action-buttons { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;}
+        button {
+            flex: 1; padding: 12px; font-size: 16px; font-weight: bold; border: none;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s;
+            min-width: 120px;
+        }
+        .play-sequential { background: #4CAF50; color: white; }
+        .play-together { background: #2196F3; color: white; }
+        .download-btn { background: #FF9800; color: white; }
+        .record-btn { background: #E91E63; color: white; }
+        button:active { transform: scale(0.95);}
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .audio-activate-wrapper {
+            text-align:center;
+            margin-bottom: 12px;
+        }
+        #audioActivateBtn {
+            background: #ffd700;
+            color:#333;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 14px;
+            border: none;
+            cursor:pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        #audioActivateBtn:disabled {
+            opacity:.7;
+            cursor:not-allowed;
+        }
+        .mute-warning {
+            display: none;
+            margin-top: 10px;
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .mute-warning .actions { margin-top: 8px; display:flex; justify-content:center; gap:8px; }
+        .mute-warning button { padding:6px 12px; border-radius:6px; border:none; cursor:pointer; }
+        .mute-warning .btn-ok { background:#667eea; color:white; }
+        .piano {
+            position: relative; display: flex; justify-content: flex-start;
+            margin: 20px auto; height: 180px; overflow-x: auto; overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+        .piano-keys { 
+            position: relative; 
+            display: inline-flex; 
+            white-space: nowrap; 
+            min-width: min-content; 
+            height: 180px;
+            align-items: flex-start;
+        }
+        .key { position: relative; cursor: pointer; user-select: none; flex-shrink: 0; }
+        .white-key {
+            width: 28px; height: 180px; background: white; border: 1px solid #000;
+            border-radius: 0 0 4px 4px; transition: all 0.1s; position: relative;
+        }
+        .white-key:active { background: #ff5722; box-shadow: 0 0 15px rgba(255,87,34,0.9);}
+        .white-key.highlight { background: #ffeb3b; box-shadow: 0 0 10px rgba(255,235,59,0.8);}
+        .white-key.playing { background: #ff5722; box-shadow: 0 0 15px rgba(255,87,34,0.9);}
+        .black-key {
+            width: 20px; height: 110px; background: #000; border: 1px solid #000;
+            border-radius: 0 0 3px 3px; position: absolute; z-index: 10;
+            top: 0;
+        }
+        .black-key:active { background: #ff5722; box-shadow: 0 0 15px rgba(255,87,34,0.9);}
+        .black-key.highlight { background: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.8);}
+        .black-key.playing { background: #ff5722; box-shadow: 0 0 15px rgba(255,87,34,0.9);}
+        .key-label {
+            position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+            font-size: 10px; font-weight: bold; pointer-events: none;
+        }
+        .white-key .key-label { color: #666; }
+        .black-key .key-label { color: white; bottom: 3px;}
+        .chord-info {
+            text-align: center; padding: 10px; background: #f5f5f5;
+            border-radius: 8px; margin-top: 15px;
+        }
+        .chord-name { font-size: 20px; font-weight: bold; color: #667eea; margin-bottom: 5px;}
+        .chord-notes { font-size: 14px; color: #666;}
+        .chord-formula { font-size: 12px; color: #999; margin-top: 5px; font-style: italic;}
+        
+        .recording-status {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            background: #e3f2fd;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #1976d2;
+            font-weight: bold;
+        }
+        .recording-status.active {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            color: #999;
+            font-size: 12px;
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 20px; }
+            .white-key { width: 24px; height: 150px;}
+            .black-key { width: 16px; height: 90px;}
+            .key-label { font-size: 8px;}
+            .piano { justify-content: flex-start; }
+            button { min-width: 100px; padding: 10px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎹 Hợp Âm Piano - Nâng Cao</h1>
+        <div class="audio-activate-wrapper">
+            <button id="audioActivateBtn">🔊 Bật tiếng</button>
+            <div id="muteWarning" class="mute-warning" role="status" aria-live="polite">
+                Lưu ý: Nếu iPhone đang ở chế độ im lặng (Silent), trang web có thể không phát âm thanh. Vui lòng tắt chế độ im lặng hoặc chuyển công tắc bên hông sang chế độ chuông.
+                <div class="actions">
+                    <button id="muteOk" class="btn-ok">Đã hiểu</button>
+                </div>
+            </div>
+        </div>
+        <div class="chord-selector">
+            <div class="selector-row">
+                <select id="rootNote">
+                    <option value="C">C</option>
+                    <option value="C#">C# / Db</option>
+                    <option value="D">D</option>
+                    <option value="D#">D# / Eb</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="F#">F# / Gb</option>
+                    <option value="G">G</option>
+                    <option value="G#">G# / Ab</option>
+                    <option value="A">A</option>
+                    <option value="A#">A# / Bb</option>
+                    <option value="B">B</option>
+                </select>
+                <select id="chordType">
+                    <!-- Triads -->
+                    <optgroup label="🔹 Triads (3 nốt)">
+                        <option value="major">Major (Trưởng)</option>
+                        <option value="minor">Minor (Thứ)</option>
+                        <option value="dim">dim (Giảm)</option>
+                        <option value="aug">aug (Tăng)</option>
+                    </optgroup>
+                    
+                    <!-- Suspended -->
+                    <optgroup label="🔸 Suspended">
+                        <option value="sus2">sus2</option>
+                        <option value="sus4">sus4</option>
+                    </optgroup>
+                    
+                    <!-- Seventh Chords -->
+                    <optgroup label="🔺 Seventh (4 nốt)">
+                        <option value="maj7">maj7 (Major 7th)</option>
+                        <option value="7">7 (Dominant 7th)</option>
+                        <option value="m7">m7 (Minor 7th)</option>
+                        <option value="mM7">mM7 (Minor-Major 7th)</option>
+                        <option value="m7b5">m7b5 (Half-dim)</option>
+                        <option value="dim7">dim7 (Diminished 7th)</option>
+                    </optgroup>
+                    
+                    <!-- Sixth Chords -->
+                    <optgroup label="🎵 Sixth Chords">
+                        <option value="6">6 (Major 6th)</option>
+                        <option value="m6">m6 (Minor 6th)</option>
+                    </optgroup>
+                    
+                    <!-- Add Chords -->
+                    <optgroup label="✨ Add Chords">
+                        <option value="add9">add9</option>
+                        <option value="madd9">m(add9)</option>
+                        <option value="add11">add11</option>
+                    </optgroup>
+                    
+                    <!-- Altered Dominant -->
+                    <optgroup label="🔥 Altered Dominant">
+                        <option value="7#5">7♯5 (7 Aug)</option>
+                        <option value="7b5">7b5 (7 Dim)</option>
+                        <option value="7#9">7♯9</option>
+                        <option value="7b9">7b9</option>
+                    </optgroup>
+                    
+                    <!-- Extended (9-13) -->
+                    <optgroup label="🎼 Extended Chords">
+                        <option value="9">9</option>
+                        <option value="m9">m9</option>
+                        <option value="maj9">maj9</option>
+                        <option value="11">11</option>
+                        <option value="m11">m11</option>
+                        <option value="13">13</option>
+                        <option value="m13">m13</option>
+                    </optgroup>
+
+                    <!-- Advanced -->
+                    <optgroup label="🌟 Advanced">
+                        <option value="maj7#11">maj7♯11</option>
+                        <option value="7#5#9">7♯5♯9</option>
+                        <option value="7sus4">7sus4</option>
+                        <option value="9sus4">9sus4</option>
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+        <div class="play-buttons">
+            <button class="play-sequential" id="btnSequential">▶ Chạy Lần Lượt</button>
+            <button class="play-together" id="btnTogether">▶ Chạy Cùng Lúc</button>
+        </div>
+        <div class="action-buttons">
+            <button class="record-btn" id="btnRecord">● Ghi Âm</button>
+            <button class="download-btn" id="btnDownload">⬇ Tải Âm Thanh</button>
+        </div>
+        <div class="recording-status" id="recordingStatus">
+            🔴 Đang ghi âm...
+        </div>
+        <div class="piano">
+            <div class="piano-keys" id="pianoKeys"></div>
+        </div>
+        <div class="chord-info">
+            <div class="chord-name" id="chordName">C Major</div>
+            <div class="chord-notes" id="chordNotes">C4 - E4 - G4</div>
+            <div class="chord-formula" id="chordFormula">Formula: 1 - 3 - 5</div>
+        </div>
+        <div class="footer">
+            Created by Minh Nhựt © 2025 | Chord Formulas Database
+        </div>
+    </div>
+    <script>
+        const AUDIO_BASE_URL = 'https://raw.githubusercontent.com/Nhut11790/nhut11790.github.io/main/tieng/acoustic_grand_piano-mp3/';
+        const noteToFileName = {
+            'C': 'C', 'C#': 'Db', 'D': 'D', 'D#': 'Eb', 'E': 'E', 'F': 'F',
+            'F#': 'Gb', 'G': 'G', 'G#': 'Ab', 'A': 'A', 'A#': 'Bb', 'B': 'B'
+        };
+
+        // ✅ KIỂM CHỨNG ĐỘ CHÍNH XÁC - Công thức hợp âm đầy đủ (theo Music Theory)
+        const chordFormulas = {
+            // Triads (3 nốt)
+            'major': { intervals: [0, 4, 7], display: '1 - 3 - 5' },
+            'minor': { intervals: [0, 3, 7], display: '1 - ♭3 - 5' },
+            'dim': { intervals: [0, 3, 6], display: '1 - ♭3 - ♭5' },
+            'aug': { intervals: [0, 4, 8], display: '1 - 3 - ♯5' },
+            
+            // Suspended (2 & 4)
+            'sus2': { intervals: [0, 2, 7], display: '1 - 2 - 5' },
+            'sus4': { intervals: [0, 5, 7], display: '1 - 4 - 5' },
+            
+            // Seventh Chords (4 nốt)
+            'maj7': { intervals: [0, 4, 7, 11], display: '1 - 3 - 5 - 7' },
+            '7': { intervals: [0, 4, 7, 10], display: '1 - 3 - 5 - ♭7' },
+            'm7': { intervals: [0, 3, 7, 10], display: '1 - ♭3 - 5 - ♭7' },
+            'mM7': { intervals: [0, 3, 7, 11], display: '1 - ♭3 - 5 - 7' },
+            'm7b5': { intervals: [0, 3, 6, 10], display: '1 - ♭3 - ♭5 - ♭7' },
+            'dim7': { intervals: [0, 3, 6, 9], display: '1 - ♭3 - ♭5 - ♭♭7' },
+            
+            // Sixth Chords
+            '6': { intervals: [0, 4, 7, 9], display: '1 - 3 - 5 - 6' },
+            'm6': { intervals: [0, 3, 7, 9], display: '1 - ♭3 - 5 - 6' },
+            
+            // Add Chords
+            'add9': { intervals: [0, 4, 7, 14], display: '1 - 3 - 5 - 9' },
+            'madd9': { intervals: [0, 3, 7, 14], display: '1 - ♭3 - 5 - 9' },
+            'add11': { intervals: [0, 4, 7, 17], display: '1 - 3 - 5 - 11' },
+            
+            // Altered Dominant (4-5 nốt)
+            '7#5': { intervals: [0, 4, 8, 10], display: '1 - 3 - ♯5 - ♭7' },
+            '7b5': { intervals: [0, 4, 6, 10], display: '1 - 3 - ♭5 - ♭7' },
+            '7#9': { intervals: [0, 4, 7, 10, 15], display: '1 - 3 - 5 - ♭7 - ♯9' },
+            '7b9': { intervals: [0, 4, 7, 10, 13], display: '1 - 3 - 5 - ♭7 - ♭9' },
+            
+            // Extended Chords (5-7 nốt)
+            '9': { intervals: [0, 4, 7, 10, 14], display: '1 - 3 - 5 - ♭7 - 9' },
+            'm9': { intervals: [0, 3, 7, 10, 14], display: '1 - ♭3 - 5 - ♭7 - 9' },
+            'maj9': { intervals: [0, 4, 7, 11, 14], display: '1 - 3 - 5 - 7 - 9' },
+            '11': { intervals: [0, 4, 7, 10, 14, 17], display: '1 - 3 - 5 - ♭7 - 9 - 11' },
+            'm11': { intervals: [0, 3, 7, 10, 14, 17], display: '1 - ♭3 - 5 - ♭7 - 9 - 11' },
+            '13': { intervals: [0, 4, 7, 10, 14, 21], display: '1 - 3 - 5 - ♭7 - 9 - 13' },
+            'm13': { intervals: [0, 3, 7, 10, 14, 21], display: '1 - ♭3 - 5 - ♭7 - 9 - 13' },
+            
+            // Advanced
+            'maj7#11': { intervals: [0, 4, 7, 11, 18], display: '1 - 3 - 5 - 7 - ♯11' },
+            '7#5#9': { intervals: [0, 4, 8, 10, 15], display: '1 - 3 - ♯5 - ♭7 - ♯9' },
+            '7sus4': { intervals: [0, 5, 7, 10], display: '1 - 4 - 5 - ♭7' },
+            '9sus4': { intervals: [0, 5, 7, 10, 14], display: '1 - 4 - 5 - ♭7 - 9' },
+        };
+
+        const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        let currentChordNotes = [];
+        let isPlaying = false;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBufferCache = {};
+        let isAudioActivated = false;
+
+        const pendingTimers = [];
+        const activeAudioSources = [];
+
+        const baseNoteVn = { 'C':'Đô','D':'Rê','E':'Mi','F':'Fa','G':'Sol','A':'La','B':'Si' };
+        const chordTypeVn = {
+            'major': 'trưởng','minor': 'thứ','dim': 'dim/giảm','aug': 'tăng',
+            'sus2':'sus2','sus4':'sus4',
+            'maj7': 'trưởng 7','7': '7','m7': 'thứ 7','mM7':'thứ trưởng 7',
+            'm7b5':'thứ giảm 7','dim7':'dim 7',
+            '6':'6','m6':'thứ 6',
+            'add9':'add9','madd9':'m add9','add11':'add11',
+            '7#5':'7 tăng','7b5':'7 giảm','7#9':'7 ♯9','7b9':'7 ♭9',
+            '9':'9','m9':'m9','maj9':'maj9','11':'11','m11':'m11','13':'13','m13':'m13',
+            'maj7#11':'maj7♯11','7#5#9':'7♯5♯9','7sus4':'7sus4','9sus4':'9sus4'
+        };
+
+        function isIos() {
+            return /iP(hone|od|ad)/.test(navigator.platform) || 
+                   (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+        }
+
+        const audioActivateBtn = document.getElementById('audioActivateBtn');
+        const muteWarning = document.getElementById('muteWarning');
+        const muteOk = document.getElementById('muteOk');
+        const btnRecord = document.getElementById('btnRecord');
+        const btnDownload = document.getElementById('btnDownload');
+        const recordingStatus = document.getElementById('recordingStatus');
+
+        muteOk.addEventListener('click', () => {
+            muteWarning.style.display = 'none';
+        });
+
+        audioActivateBtn.addEventListener('click', async function() {
+            audioActivateBtn.disabled = true;
+            audioActivateBtn.textContent = "Đang bật tiếng...";
+            try {
+                await activateAudioOnIOS();
+                audioActivateBtn.textContent = "Âm thanh đã bật!";
+                isAudioActivated = true;
+                if (isIos()) {
+                    muteWarning.style.display = 'block';
+                }
+            } catch (e) {
+                audioActivateBtn.disabled = false;
+                audioActivateBtn.textContent = "🔊 Bật tiếng (lỗi, thử lại)";
+                alert("Có lỗi khi bật tiếng, hãy thử lại.");
+            }
+        });
+
+        async function activateAudioOnIOS() {
+            if (audioCtx.state === 'suspended') await audioCtx.resume();
+            try {
+                const url = 'https://raw.githubusercontent.com/nhut990/files/refs/heads/main/tieng/E3_active_audio.mp3';
+                const response = await fetch(url, {cache: 'no-cache'});
+                if (response.ok) {
+                    const buffer = await response.arrayBuffer();
+                    const audioBuffer = await audioCtx.decodeAudioData(buffer.slice(0));
+                    const source = audioCtx.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(audioCtx.destination);
+                    source.start(0);
+                    activeAudioSources.push(source);
+                    source.onended = () => {
+                        const i = activeAudioSources.indexOf(source);
+                        if (i !== -1) activeAudioSources.splice(i,1);
+                    };
+                    await new Promise(res => setTimeout(res, 350));
+                    return;
+                }
+            } catch (err) {
+                // fallback
+            }
+
+            try {
+                const sampleRate = audioCtx.sampleRate || 44100;
+                const length = Math.floor(sampleRate * 0.05);
+                const buffer = audioCtx.createBuffer(1, length, sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < length; i++) data[i] = 0.0;
+
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                const gain = audioCtx.createGain();
+                gain.gain.value = 0.0001;
+                source.connect(gain).connect(audioCtx.destination);
+
+                activeAudioSources.push(source);
+                source.onended = () => {
+                    const i = activeAudioSources.indexOf(source);
+                    if (i !== -1) activeAudioSources.splice(i,1);
+                };
+
+                source.start(0);
+                await new Promise(res => setTimeout(res, 120));
+            } catch (err) {
+                console.error('activateAudioOnIOS fallback error', err);
+            }
+        }
+
+        async function loadAudioBuffer(noteName) {
+            if (audioBufferCache[noteName]) return audioBufferCache[noteName];
+            const note = noteName.slice(0, -1);
+            const octave = noteName.slice(-1);
+            const fileName = noteToFileName[note];
+            const audioUrl = `${AUDIO_BASE_URL}${fileName}${octave}.mp3`;
+            try {
+                const response = await fetch(audioUrl);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer.slice(0));
+                audioBufferCache[noteName] = audioBuffer;
+                return audioBuffer;    
+            } catch (error) {
+                console.error('Lỗi tải âm thanh:', noteName, error);
+                return null;
+            }
+        }
+
+        async function preloadAllNotesBuffer() {
+            const noteList = [];
+            for (let octave = 3; octave <= 5; octave++) {
+                for (let i = 0; i < 12; i++) {
+                    noteList.push(notes[i] + octave);
+                }
+            }
+            await Promise.all(noteList.map(note => loadAudioBuffer(note)));
+        }
+
+        function clearPendingActions() {
+            while (pendingTimers.length) {
+                const t = pendingTimers.pop();
+                clearTimeout(t);
+            }
+            while (activeAudioSources.length) {
+                const src = activeAudioSources.pop();
+                try { src.stop(0); } catch (e) {}
+            }
+        }
+
+        async function playNote(noteName, duration = 300, fromSequential = false) {
+            try {
+                if (audioCtx.state === 'suspended' || !isAudioActivated) {
+                    audioActivateBtn.disabled = false;
+                    audioActivateBtn.textContent = "🔊 Bật tiếng để nghe hợp âm!";
+                    alert("Vui lòng bấm nút Bật tiếng phía trên để nghe được âm thanh hợp âm!");
+                    return;
+                }
+                const audioBuffer = await loadAudioBuffer(noteName);
+                if (!audioBuffer) return;
+                const source = audioCtx.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioCtx.destination);
+
+                activeAudioSources.push(source);
+                source.onended = () => {
+                    const idx = activeAudioSources.indexOf(source);
+                    if (idx !== -1) activeAudioSources.splice(idx, 1);
+                };
+
+                source.start(0);
+
+                if (fromSequential) highlightKey(noteName, 'playing');
+                if (fromSequential) {
+                    const t = setTimeout(() => { highlightKey(noteName, 'highlight'); }, duration);
+                    pendingTimers.push(t);
+                }
+            } catch (error) {
+                console.error('Lỗi phát âm thanh:', error);
+            }
+        }
+
+        function highlightKey(noteName, className) {
+            const key = document.querySelector(`[data-note="${noteName}"]`);
+            if (key) {
+                key.classList.remove('playing', 'highlight');
+                if (className) key.classList.add(className);
+            }
+        }
+
+        function getVietnameseRoot(root) {
+            const hasSharp = root.includes('#');
+            const hasFlat = root.includes('b');
+            const base = root.replace('#','').replace('b','');
+            const baseVn = baseNoteVn[base] || base;
+            let suffix = '';
+            if (hasSharp) suffix = ' thăng';
+            else if (hasFlat) suffix = ' giáng';
+            return baseVn + suffix;
+        }
+
+        function getChordNotes(root, chordType) {
+            const rootIndex = notes.indexOf(root);
+            const formula = chordFormulas[chordType];
+            
+            if (!formula) {
+                console.warn('Unknown chord type:', chordType);
+                return [];
+            }
+
+            const chordNotes = [];
+            let startOctave = 3;
+            formula.intervals.forEach(interval => {
+                const noteIndex = (rootIndex + interval) % 12;
+                const octaveOffset = Math.floor((rootIndex + interval) / 12);
+                const octave = startOctave + octaveOffset;
+                if (octave >= 3 && octave <= 5) {
+                    chordNotes.push(notes[noteIndex] + octave);
+                }
+            });
+            return chordNotes;
+        }
+
+        function createPiano() {
+            const pianoKeys = document.getElementById('pianoKeys');
+            pianoKeys.innerHTML = '';
+            const isMobile = window.innerWidth <= 480;
+            const whiteKeyWidth = isMobile ? 24 : 28;
+            for (let octave = 3; octave <= 5; octave++) {
+                const endIndex = (octave === 5) ? 0 : 11;
+                for (let i = 0; i <= endIndex; i++) {
+                    const note = notes[i];
+                    const noteName = note + octave;
+                    const isBlack = note.includes('#');
+                    if (!isBlack) {
+                        const whiteKeyContainer = document.createElement('div');
+                        whiteKeyContainer.style.position = 'relative';
+                        whiteKeyContainer.style.display = 'inline-flex';
+                        whiteKeyContainer.style.width = whiteKeyWidth + 'px';
+                        const whiteKey = document.createElement('div');
+                        whiteKey.className = 'key white-key';
+                        whiteKey.dataset.note = noteName;
+                        const label = document.createElement('div');
+                        label.className = 'key-label';
+                        label.textContent = note.replace('#', '♯') + octave;
+                        whiteKey.appendChild(label);
+
+                        whiteKey.addEventListener('mousedown', async () => {
+                            whiteKey.classList.remove('highlight');
+                            whiteKey.classList.add('playing');
+                            await playNote(noteName);
+                        });
+                        whiteKey.addEventListener('mouseup', () => {
+                            whiteKey.classList.remove('playing');
+                            if (currentChordNotes.includes(noteName)) {
+                                whiteKey.classList.add('highlight');
+                            }
+                        });
+                        whiteKey.addEventListener('mouseleave', () => {
+                            whiteKey.classList.remove('playing');
+                            if (currentChordNotes.includes(noteName)) {
+                                whiteKey.classList.add('highlight');
+                            }
+                        });
+                        whiteKey.addEventListener('touchstart', async (e) => {
+                            e.preventDefault();
+                            whiteKey.classList.remove('highlight');
+                            whiteKey.classList.add('playing');
+                            await playNote(noteName);
+                        });
+                        whiteKey.addEventListener('touchend', () => {
+                            whiteKey.classList.remove('playing');
+                            if (currentChordNotes.includes(noteName)) {
+                                whiteKey.classList.add('highlight');
+                            }
+                        });
+                        whiteKeyContainer.appendChild(whiteKey);
+
+                        if (i < 11 && notes[i+1].includes('#') && note !== 'E' && note !== 'B') {
+                            const blackKey = document.createElement('div');
+                            blackKey.className = 'key black-key';
+                            const blackNoteName = notes[i+1] + octave;
+                            blackKey.dataset.note = blackNoteName;
+                            blackKey.style.left = (whiteKeyWidth * 0.65) + 'px';
+                            const blackLabel = document.createElement('div');
+                            blackLabel.className = 'key-label';
+                            blackLabel.textContent = notes[i+1].replace('#', '♯') + octave;
+                            blackKey.appendChild(blackLabel);
+
+                            blackKey.addEventListener('mousedown', async (e) => {
+                                e.stopPropagation();
+                                blackKey.classList.remove('highlight');
+                                blackKey.classList.add('playing');
+                                await playNote(blackNoteName);
+                            });
+                            blackKey.addEventListener('mouseup', (e) => {
+                                e.stopPropagation();
+                                blackKey.classList.remove('playing');
+                                if (currentChordNotes.includes(blackNoteName)) {
+                                    blackKey.classList.add('highlight');
+                                }
+                            });
+                            blackKey.addEventListener('mouseleave', () => {
+                                blackKey.classList.remove('playing');
+                                if (currentChordNotes.includes(blackNoteName)) {
+                                    blackKey.classList.add('highlight');
+                                }
+                            });
+                            blackKey.addEventListener('touchstart', async (e) => {
+                                e.preventDefault(); e.stopPropagation();
+                                blackKey.classList.remove('highlight');
+                                blackKey.classList.add('playing');
+                                await playNote(blackNoteName);
+                            });
+                            blackKey.addEventListener('touchend', (e) => {
+                                e.stopPropagation();
+                                blackKey.classList.remove('playing');
+                                if (currentChordNotes.includes(blackNoteName)) {
+                                    blackKey.classList.add('highlight');
+                                }
+                            });
+                            whiteKeyContainer.appendChild(blackKey);
+                        }
+                        pianoKeys.appendChild(whiteKeyContainer);
+                    }
+                }
+            }
+        }
+
+        function scrollChordIntoView() {
+            if (!currentChordNotes.length) return;
+            setTimeout(() => {
+                const pianoContainer = document.querySelector('.piano');
+                const noteElements = currentChordNotes
+                    .map(note => document.querySelector(`[data-note="${note}"]`))
+                    .filter(el => el !== null);
+                if (noteElements.length) {
+                    const positions = noteElements.map(el => {
+                        const rect = el.getBoundingClientRect();
+                        return pianoContainer.scrollLeft + rect.left - pianoContainer.getBoundingClientRect().left;
+                    });
+                    const leftEdge = Math.min(...positions);
+                    const rightEdge = Math.max(...positions) + noteElements[0].offsetWidth;
+                    const center = (leftEdge + rightEdge) / 2;
+                    const containerWidth = pianoContainer.offsetWidth;
+                    const scrollLeft = center - containerWidth / 2;
+                    if (pianoContainer.scrollTo) {
+                        pianoContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+                    } else {
+                        pianoContainer.scrollLeft = scrollLeft;
+                    }
+                }
+            }, 50);
+        }
+
+        function updateChordDisplay() {
+            clearPendingActions();
+            const root = document.getElementById('rootNote').value;
+            const chordType = document.getElementById('chordType').value;
+            currentChordNotes = getChordNotes(root, chordType);
+            document.querySelectorAll('.key').forEach(key => {
+                key.classList.remove('highlight','playing');
+            });
+            currentChordNotes.forEach(note => {
+                const key = document.querySelector(`[data-note="${note}"]`);
+                if (key) key.classList.add('highlight');
+            });
+
+            const formula = chordFormulas[chordType];
+            const displayFormula = formula ? formula.display : 'Unknown';
+
+            const chordNames = {
+                'major': '', 'minor': 'm', '7': '7', 'maj7': 'maj7',
+                'm7': 'm7', 'mM7': 'mM7', 'm7b5': 'm7♭5', 'dim': 'dim', 'dim7': 'dim7', 'aug': 'aug', 
+                'sus2': 'sus2', 'sus4': 'sus4',
+                '6': '6', 'm6': 'm6',
+                'add9': 'add9', 'madd9': 'm(add9)', 'add11': 'add11',
+                '7#5': '7♯5', '7b5': '7♭5', '7#9': '7♯9', '7b9': '7♭9',
+                '9': '9', 'm9': 'm9', 'maj9': 'maj9', '11': '11', 'm11': 'm11', '13': '13', 'm13': 'm13',
+                'maj7#11': 'maj7♯11', '7#5#9': '7♯5♯9', '7sus4': '7sus4', '9sus4': '9sus4'
+            };
+
+            const displayRootWithSuffix = root + (chordNames[chordType] || '');
+            const vnRoot = getVietnameseRoot(root);
+            const vnType = chordTypeVn[chordType] || '';
+            const displayVn = (vnRoot + (vnType ? ' ' + vnType : '')).trim();
+
+            document.getElementById('chordName').textContent = `${displayRootWithSuffix} (${displayVn})`;
+            document.getElementById('chordNotes').textContent = currentChordNotes.map(n => n.replace('#', '♯')).join(' - ');
+            document.getElementById('chordFormula').textContent = `Formula: ${displayFormula}`;
+            
+            scrollChordIntoView();
+        }
+
+        async function playSequential() {
+            if (isPlaying) return;
+            isPlaying = true;
+            document.getElementById('btnSequential').disabled = true;
+            document.getElementById('btnTogether').disabled = true;
+            for (let i = 0; i < currentChordNotes.length; i++) {
+                await playNote(currentChordNotes[i], 440, true);
+                await new Promise(resolve => setTimeout(resolve, 450));
+            }
+            isPlaying = false;
+            document.getElementById('btnSequential').disabled = false;
+            document.getElementById('btnTogether').disabled = false;
+        }
+
+        async function playTogether() {
+            if (isPlaying) return;
+            isPlaying = true;
+            document.getElementById('btnSequential').disabled = true;
+            document.getElementById('btnTogether').disabled = true;
+            currentChordNotes.forEach(note => highlightKey(note, 'playing'));
+            await Promise.all(currentChordNotes.map(note => playNote(note, 800)));
+            const t = setTimeout(() => {
+                currentChordNotes.forEach(note => highlightKey(note, 'highlight'));
+                isPlaying = false;
+                document.getElementById('btnSequential').disabled = false;
+                document.getElementById('btnTogether').disabled = false;
+            }, 800);
+            pendingTimers.push(t);
+        }
+
+        async function startRecording() {
+            try {
+                recordedChunks = [];
+                
+                // Tạo destination để ghi âm
+                const dest = audioCtx.createMediaStreamAudioDestination();
+                
+                // Kết nối tất cả audio sources đến destination
+                const gainNode = audioCtx.createGain();
+                gainNode.connect(dest);
+                
+                // Lưu destination node để kết nối các âm thanh phát lại
+                audioCtx.destination.connect = function(node) {
+                    node.connect(dest);
+                    return this;
+                };
+                
+                mediaRecorder = new MediaRecorder(dest.stream);
+                mediaRecorder.ondataavailable = (e) => recordedChunks.push(e.data);
+                mediaRecorder.start();
+                
+                isRecording = true;
+                btnRecord.textContent = '⏹ Dừng Ghi Âm';
+                btnRecord.style.background = '#4CAF50';
+                recordingStatus.classList.add('active');
+                recordingStatus.style.display = 'block';
+                btnDownload.disabled = true;
+            } catch (error) {
+                console.error('Lỗi bắt đầu ghi âm:', error);
+                alert('Không thể bắt đầu ghi âm. Kiểm tra quyền truy cập microphone.');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                
+                mediaRecorder.onstop = () => {
+                    isRecording = false;
+                    btnRecord.textContent = '● Ghi Âm';
+                    btnRecord.style.background = '#E91E63';
+                    recordingStatus.classList.remove('active');
+                    recordingStatus.style.display = 'none';
+                    btnDownload.disabled = false;
+                };
+            }
+        }
+
+        function downloadRecording() {
+            if (recordedChunks.length === 0) {
+                alert('Chưa có bản ghi âm nào. Vui lòng ghi âm trước.');
+                return;
+            }
+
+            const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hop-am-piano-${new Date().getTime()}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        btnRecord.addEventListener('click', () => {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        });
+
+        btnDownload.addEventListener('click', downloadRecording);
+
+        document.getElementById('rootNote').addEventListener('change', updateChordDisplay);
+        document.getElementById('chordType').addEventListener('change', updateChordDisplay);
+        document.getElementById('btnSequential').addEventListener('click', playSequential);
+        document.getElementById('btnTogether').addEventListener('click', playTogether);
+
+        function handleResize() {
+            createPiano();
+            updateChordDisplay();
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        createPiano();
+        updateChordDisplay();
+        preloadAllNotesBuffer();
+    </script>
+</body>
+</html>
